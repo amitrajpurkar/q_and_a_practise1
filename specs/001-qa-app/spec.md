@@ -89,7 +89,10 @@ User's performance is tracked throughout the session, and a comprehensive summar
 - **FR-007**: System MUST provide end-of-session summary with detailed results
 - **FR-008**: System MUST handle CSV file parsing with proper error handling
 - **FR-009**: System MUST provide immediate feedback on answer correctness
-- **FR-010**: System MUST support session continuation until user chooses to end
+- **FR-010**: System MUST support sessions of 10 questions by default, configurable between 5-50 questions
+- **FR-011**: System MUST provide immediate feedback showing correct answer with brief explanation for incorrect responses
+- **FR-012**: System MUST operate without time limits for questions or sessions
+- **FR-013**: System MUST maintain separate sessions for CLI and web interfaces
 
 ### Technical Requirements ( Constitution Compliance)
 
@@ -149,6 +152,16 @@ User's performance is tracked throughout the session, and a comprehensive summar
 - **SC-007**: Application achieves 90% test coverage as measured by automated coverage tools
 - **SC-008**: All 15+ required programming concepts are implemented and verifiable in codebase
 
+## Clarifications
+
+### Session 2025-12-02
+
+- Q: Session Length and Question Limits → A: Fixed session length with 10 questions default, configurable 5-50
+- Q: Score Persistence and History → A: Scores only shown at session end, no persistence
+- Q: Answer Feedback Detail → A: Show correct answer with brief explanation
+- Q: Question Time Limits → A: No time limits for questions or sessions
+- Q: Web Interface Session Management → A: Separate sessions for each interface
+
 ## Assumptions
 
 - CSV file follows the established format with headers: topic, question, option1, option2, option3, option4, answer, difficulty
@@ -156,3 +169,4 @@ User's performance is tracked throughout the session, and a comprehensive summar
 - Application runs on standard desktop environments without special hardware requirements
 - Question bank contains sufficient questions for each topic/difficulty combination (minimum 20 per category)
 - User sessions are single-user and don't require persistent storage between runs
+- Sessions consist of 10 questions by default, configurable between 5-50 questions
