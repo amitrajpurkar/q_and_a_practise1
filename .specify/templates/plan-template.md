@@ -31,7 +31,42 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+### SOLID Principles Compliance
+- [ ] Single Responsibility: Each module has one reason to change
+- [ ] Open/Closed: Classes open for extension, closed for modification
+- [ ] Liskov Substitution: Child classes substitutable for parents
+- [ ] Interface Segregation: No fat interfaces, clients depend only on used methods
+- [ ] Dependency Inversion: High-level modules don't depend on low-level modules
+
+### Test Coverage Requirements
+- [ ] 90% minimum test coverage planned
+- [ ] TDD approach ( test-first development)
+- [ ] Unit tests for all business logic
+- [ ] Integration tests for service interactions
+- [ ] End-to-end tests for user journeys
+
+### Modular Architecture Requirements
+- [ ] Clear backend/frontend separation
+- [ ] Service layer abstractions
+- [ ] Independent module deployability
+- [ ] No direct data access from presentation layer
+
+### Programming Concepts Implementation
+- [ ] Arrays and data structures
+- [ ] User-defined objects and records
+- [ ] Simple and complex selection ( if/else, nested if, switch)
+- [ ] Loops and nested loops
+- [ ] User-defined methods with parameters and return values
+- [ ] Sorting algorithms
+- [ ] Searching algorithms
+- [ ] File I/O operations
+- [ ] Sentinels/flags for control flow
+- [ ] Recursion where appropriate
+- [ ] Merging sorted data structures
+- [ ] Polymorphism implementation
+- [ ] Inheritance hierarchies
+- [ ] Encapsulation practices
+- [ ] Text file parsing capabilities
 
 ## Project Structure
 
