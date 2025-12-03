@@ -110,6 +110,8 @@ class ScoreService(IScoreService):
             correct_answers = 0
             incorrect_answers = 0
             topic_performance = {}
+            current_streak = 0
+            best_streak = 0
             
             for question_id, user_answer in session.user_answers.items():
                 question = self.question_service.get_question_by_id(question_id)
@@ -122,28 +124,45 @@ class ScoreService(IScoreService):
                 
                 if is_correct:
                     correct_answers += 1
+                    current_streak += 1
+                    best_streak = max(best_streak, current_streak)
                 else:
                     incorrect_answers += 1
+                    current_streak = 0
                 
-                # Update topic performance
+                # Update topic performance by difficulty
                 topic = question.topic
+                difficulty = question.difficulty
+                
                 if topic not in topic_performance:
-                    topic_performance[topic] = {'correct': 0, 'total': 0}
-                topic_performance[topic]['total'] += 1
+                    topic_performance[topic] = {}
+                if difficulty not in topic_performance[topic]:
+                    topic_performance[topic][difficulty] = {'correct': 0, 'incorrect': 0, 'total': 0}
+                
+                topic_performance[topic][difficulty]['total'] += 1
                 if is_correct:
-                    topic_performance[topic]['correct'] += 1
+                    topic_performance[topic][difficulty]['correct'] += 1
+                else:
+                    topic_performance[topic][difficulty]['incorrect'] += 1
             
             # Calculate time taken
             time_taken = session.get_session_duration()
             
+            # Create streak data
+            streak_data = {
+                "current": current_streak,
+                "best": best_streak
+            }
+            
             # Create score
-            score = Score.from_session_results(
+            score = Score(
                 session_id=session_id,
-                total_questions=session.total_questions,
+                total_questions=correct_answers + incorrect_answers,
                 correct_answers=correct_answers,
                 incorrect_answers=incorrect_answers,
                 time_taken_seconds=time_taken,
-                topic_performance=topic_performance
+                topic_performance=topic_performance,
+                streak_data=streak_data
             )
             
             # Store score

@@ -304,6 +304,19 @@ class SessionService(ISessionService):
             if not session:
                 raise SessionError(f"Session not found: {session_id}", session_id)
             
+            # If session is already completed, just return the existing score
+            if not session.is_active:
+                score = self.score_service.calculate_score(session_id)
+                self.logger.info(
+                    f"Session {session_id} was already completed, returning existing score",
+                    extra={
+                        "event_type": "session_already_completed",
+                        "session_id": session_id,
+                        "existing_score": score.accuracy_percentage if score else 0
+                    }
+                )
+                return score
+            
             # Complete the session
             session.complete_session()
             
@@ -329,6 +342,44 @@ class SessionService(ISessionService):
         except Exception as e:
             self.logger.error(f"Failed to complete session: {str(e)}")
             raise SessionError(f"Failed to complete session: {str(e)}", session_id)
+    
+    def get_session_score(self, session_id: str) -> Optional[Score]:
+        """
+        Get current score for an active or completed session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Current score if session exists, None otherwise
+            
+        Raises:
+            SessionError: If session operations fail
+        """
+        try:
+            session = self.get_session(session_id)
+            if not session:
+                raise SessionError(f"Session not found: {session_id}", session_id)
+            
+            # Calculate score (doesn't complete the session)
+            score = self.score_service.calculate_score(session_id)
+            
+            self.logger.info(
+                f"Retrieved score for session {session_id}: {score.accuracy_percentage if score else 0}%",
+                extra={
+                    "event_type": "score_retrieved",
+                    "session_id": session_id,
+                    "accuracy_percentage": score.accuracy_percentage if score else 0
+                }
+            )
+            
+            return score
+            
+        except SessionError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Failed to get session score: {str(e)}")
+            raise SessionError(f"Failed to get session score: {str(e)}", session_id)
     
     def _validate_session_parameters(self, topic: str, difficulty: str, total_questions: int) -> None:
         """

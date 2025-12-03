@@ -35,6 +35,8 @@ class SessionResponse(BaseModel):
     current_question_index: int
     is_active: bool
     progress: Dict[str, Any]
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
 
 
 class QuestionSubmissionRequest(BaseModel):
@@ -51,6 +53,7 @@ class NextQuestionResponse(BaseModel):
     question_id: Optional[str]
     question_text: Optional[str]
     options: Optional[List[str]]
+    correct_answer: Optional[str] = None
     session_complete: bool
 
 
@@ -156,6 +159,8 @@ async def get_session(session_id: str) -> SessionResponse:
             current_question_index=session.current_question_index,
             is_active=session.is_active,
             progress=session.get_progress(),
+            start_time=session.start_time,
+            end_time=session.end_time,
         )
 
     except HTTPException:
@@ -236,6 +241,7 @@ async def get_next_question(session_id: str) -> NextQuestionResponse:
             question_id=question.id,
             question_text=question.question_text,
             options=question.get_options(),
+            correct_answer=question.correct_answer,
             session_complete=False,
         )
 
@@ -262,14 +268,64 @@ async def complete_session(session_id: str) -> Dict[str, Any]:
         container = get_container()
         session_service = container.resolve(ISessionService)
 
-        session_service.complete_session(session_id)
+        score = session_service.complete_session(session_id)
+
+        if not score:
+            raise HTTPException(status_code=404, detail="Session not found")
 
         return {
-            "success": True,
-            "message": "Session completed successfully",
-            "session_id": session_id,
+            "session_id": score.session_id,
+            "total_questions": score.total_questions,
+            "correct_answers": score.correct_answers,
+            "incorrect_answers": score.incorrect_answers,
+            "accuracy_percentage": score.accuracy_percentage,
+            "time_taken_seconds": score.time_taken_seconds,
+            "topic_performance": score.topic_performance,
+            "streak_data": score.streak_data
         }
 
+    except SessionError as e:
+        logger.warning(f"Session error completing session: {str(e)}")
+        raise HTTPException(status_code=404, detail="Session not found")
     except Exception as e:
         logger.error(f"Failed to complete session: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to complete session")
+
+
+@router.get("/{session_id}/score", response_model=Dict[str, Any])
+async def get_session_score(session_id: str) -> Dict[str, Any]:
+    """
+    Get current session score and progress.
+
+    Args:
+        session_id: Session identifier
+
+    Returns:
+        Current session score with performance metrics
+    """
+    try:
+        container = get_container()
+        session_service = container.resolve(ISessionService)
+
+        score = session_service.get_session_score(session_id)
+
+        if not score:
+            raise HTTPException(status_code=404, detail="Session not found")
+
+        return {
+            "session_id": score.session_id,
+            "total_questions": score.total_questions,
+            "correct_answers": score.correct_answers,
+            "incorrect_answers": score.incorrect_answers,
+            "accuracy_percentage": score.accuracy_percentage,
+            "time_taken_seconds": score.time_taken_seconds,
+            "topic_performance": score.topic_performance,
+            "streak_data": score.streak_data
+        }
+
+    except SessionError as e:
+        logger.warning(f"Session error getting score: {str(e)}")
+        raise HTTPException(status_code=404, detail="Session not found")
+    except Exception as e:
+        logger.error(f"Failed to get session score: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve session score")

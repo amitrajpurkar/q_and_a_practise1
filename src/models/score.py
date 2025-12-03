@@ -33,7 +33,7 @@ class AnswerResult:
 class Score:
     """
     Tracks user performance including correct answers, total questions,
-    accuracy percentage, and timing information.
+    accuracy percentage, timing information, and streak data.
 
     Follows Single Responsibility principle by handling
     only score data and calculation logic.
@@ -50,7 +50,10 @@ class Score:
     time_taken_seconds: int = 0
 
     # Topic performance breakdown
-    topic_performance: Dict[str, Dict[str, int]] = field(default_factory=dict)
+    topic_performance: Dict[str, Dict[str, Dict[str, int]]] = field(default_factory=dict)
+    
+    # Streak tracking
+    streak_data: Dict[str, int] = field(default_factory=dict)
 
     # Metadata
     created_at: Optional[str] = None
@@ -141,43 +144,53 @@ class Score:
 
     def _validate_topic_performance(self) -> None:
         """Validate topic performance breakdown."""
-        for topic, performance in self.topic_performance.items():
-            if not isinstance(performance, dict):
+        for topic, difficulties in self.topic_performance.items():
+            if not isinstance(difficulties, dict):
                 raise ValidationError(
-                    f"Topic performance for '{topic}' must be a dictionary",
+                    f"Topic performance for '{topic}' must be a dictionary of difficulties",
                     "topic_performance",
                     self.topic_performance,
                 )
 
-            if "correct" not in performance or "total" not in performance:
-                raise ValidationError(
-                    f"Topic performance for '{topic}' must contain 'correct' and 'total' keys",
-                    "topic_performance",
-                    performance,
-                )
+            for difficulty, performance in difficulties.items():
+                if not isinstance(performance, dict):
+                    raise ValidationError(
+                        f"Performance for '{topic}-{difficulty}' must be a dictionary",
+                        "topic_performance",
+                        self.topic_performance,
+                    )
 
-            if not isinstance(performance["correct"], int) or not isinstance(
-                performance["total"], int
-            ):
-                raise ValidationError(
-                    f"Topic performance values for '{topic}' must be integers",
-                    "topic_performance",
-                    performance,
-                )
+                required_keys = ["correct", "incorrect", "total"]
+                for key in required_keys:
+                    if key not in performance:
+                        raise ValidationError(
+                            f"Performance for '{topic}-{difficulty}' must contain '{key}' key",
+                            "topic_performance",
+                            performance,
+                        )
 
-            if performance["correct"] < 0 or performance["total"] < 0:
-                raise ValidationError(
-                    f"Topic performance values for '{topic}' must be non-negative",
-                    "topic_performance",
-                    performance,
-                )
+                if not isinstance(performance["correct"], int) or not isinstance(
+                    performance["incorrect"], int
+                ) or not isinstance(performance["total"], int):
+                    raise ValidationError(
+                        f"Performance values for '{topic}-{difficulty}' must be integers",
+                        "topic_performance",
+                        performance,
+                    )
 
-            if performance["correct"] > performance["total"]:
-                raise ValidationError(
-                    f"Topic correct answers ({performance['correct']}) cannot exceed total ({performance['total']}) for '{topic}'",
-                    "topic_performance",
-                    performance,
-                )
+                if performance["correct"] < 0 or performance["incorrect"] < 0 or performance["total"] < 0:
+                    raise ValidationError(
+                        f"Performance values for '{topic}-{difficulty}' must be non-negative",
+                        "topic_performance",
+                        performance,
+                    )
+
+                if performance["correct"] + performance["incorrect"] != performance["total"]:
+                    raise ValidationError(
+                        f"Performance for '{topic}-{difficulty}' must have correct + incorrect = total",
+                        "topic_performance",
+                        performance,
+                    )
 
     def _calculate_accuracy(self) -> None:
         """Calculate accuracy percentage."""
