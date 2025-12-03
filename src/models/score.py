@@ -13,6 +13,23 @@ from src.utils.exceptions import ValidationError, ScoreError
 
 
 @dataclass
+class AnswerResult:
+    """
+    Represents the result of an answer submission.
+    
+    Contains information about whether the answer was correct,
+    the correct answer, and optional explanation.
+    """
+    
+    question_id: str
+    correct: bool
+    answer_text: str
+    correct_answer: str
+    explanation: Optional[str] = None
+    time_taken_seconds: int = 0
+
+
+@dataclass
 class Score:
     """
     Tracks user performance including correct answers, total questions,

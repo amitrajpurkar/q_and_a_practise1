@@ -73,7 +73,7 @@ class QuestionService(IQuestionService):
             raise QuestionError(f"Failed to retrieve difficulties: {str(e)}")
 
     def get_random_question(
-        self, topic: str, difficulty: str, exclude_ids: List[str]
+        self, topic: str, difficulty: str, exclude_ids: Optional[List[str]] = None
     ) -> Optional[Question]:
         """
         Get random question for session.

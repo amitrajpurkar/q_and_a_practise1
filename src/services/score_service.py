@@ -7,7 +7,7 @@ Implements business logic for score calculation following SOLID principles.
 from typing import List, Optional, Dict, Any
 import logging
 
-from src.models.score import Score
+from src.models.score import Score, AnswerResult
 from src.models.session import UserSession
 from src.models.question import Question
 from src.services.interfaces import IScoreService, ISessionService, IQuestionService
@@ -38,6 +38,54 @@ class ScoreService(IScoreService):
         self.question_service = question_service
         self.logger = logger or logging.getLogger(__name__)
         self._scores: Dict[str, Score] = {}
+    
+    def record_answer(self, session_id: str, question_id: str, user_answer: str, correct_answer: str, is_correct: bool) -> AnswerResult:
+        """
+        Record an answer and return validation result.
+        
+        Args:
+            session_id: Session identifier
+            question_id: Question ID
+            user_answer: User's submitted answer
+            correct_answer: The correct answer
+            is_correct: Whether the answer is correct
+            
+        Returns:
+            AnswerResult with validation details
+            
+        Raises:
+            ScoreError: If recording fails
+        """
+        try:
+            # Generate explanation for incorrect answers (simple implementation)
+            explanation = None
+            if not is_correct:
+                explanation = f"The correct answer is: {correct_answer}"
+            
+            result = AnswerResult(
+                question_id=question_id,
+                correct=is_correct,
+                answer_text=user_answer,
+                correct_answer=correct_answer,
+                explanation=explanation,
+                time_taken_seconds=0  # Could be enhanced to track actual time
+            )
+            
+            self.logger.info(
+                f"Answer recorded for session {session_id}, question {question_id}, correct: {is_correct}",
+                extra={
+                    "event_type": "answer_recorded",
+                    "session_id": session_id,
+                    "question_id": question_id,
+                    "is_correct": is_correct
+                }
+            )
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Failed to record answer: {str(e)}")
+            raise ScoreError(f"Failed to record answer: {str(e)}")
     
     def calculate_score(self, session_id: str) -> Optional[Score]:
         """

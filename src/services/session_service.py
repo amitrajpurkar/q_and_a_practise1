@@ -10,7 +10,7 @@ import uuid
 
 from src.models.session import UserSession
 from src.models.question import Question
-from src.models.score import Score
+from src.models.score import Score, AnswerResult
 from src.services.interfaces import ISessionService, IQuestionService, IScoreService
 from src.utils.exceptions import SessionError, ValidationError
 
@@ -157,6 +157,85 @@ class SessionService(ISessionService):
         except Exception as e:
             self.logger.error(f"Failed to submit answer: {str(e)}")
             raise SessionError(f"Failed to submit answer: {str(e)}", session_id)
+    
+    def validate_answer(self, session_id: str, question_id: str, answer: str) -> AnswerResult:
+        """
+        Validate answer for a question in a session.
+        
+        Args:
+            session_id: Session identifier
+            question_id: Question ID
+            answer: User's answer
+            
+        Returns:
+            AnswerResult with validation details
+            
+        Raises:
+            SessionError: If session operations fail
+            ValidationError: If answer validation fails
+        """
+        try:
+            # Validate input parameters
+            if not session_id or not session_id.strip():
+                raise ValidationError("Session ID cannot be empty")
+            if not question_id or not question_id.strip():
+                raise ValidationError("Question ID cannot be empty")
+            if not answer or not answer.strip():
+                raise ValidationError("Answer cannot be empty")
+            
+            # Get session
+            session = self.get_session(session_id)
+            if not session:
+                raise SessionError(f"Session not found: {session_id}", session_id)
+            
+            if not session.is_active:
+                raise ValidationError(f"Session is not active: {session_id}")
+            
+            # Check if question was already answered
+            if question_id in session.user_answers:
+                raise ValidationError(f"Question {question_id} already answered in session {session_id}")
+            
+            # Get question details
+            question = self.question_service.get_question_by_id(question_id)
+            if not question:
+                raise ValidationError(f"Invalid question ID: {question_id}")
+            
+            # Validate answer ( case-insensitive and whitespace trimmed)
+            user_answer = answer.strip().lower()
+            correct_answer = question.correct_answer.strip().lower()
+            is_correct = user_answer == correct_answer
+            
+            # Record answer with score service
+            result = self.score_service.record_answer(
+                session_id=session_id,
+                question_id=question_id,
+                user_answer=answer,
+                correct_answer=question.correct_answer,
+                is_correct=is_correct
+            )
+            
+            # Update session state
+            session.submit_answer(question_id, answer)
+            
+            self.logger.info(
+                f"Answer validated for session {session_id}, question {question_id}, correct: {is_correct}",
+                extra={
+                    "event_type": "answer_validated",
+                    "session_id": session_id,
+                    "question_id": question_id,
+                    "is_correct": is_correct,
+                    "user_answer": answer,
+                    "correct_answer": question.correct_answer
+                }
+            )
+            
+            return result
+            
+        except (ValidationError, SessionError):
+            raise
+        except Exception as e:
+            self.logger.error(f"Failed to validate answer: {str(e)}")
+            raise SessionError(f"Failed to validate answer: {str(e)}", session_id)
     
     def get_next_question(self, session_id: str) -> Optional[Question]:
         """

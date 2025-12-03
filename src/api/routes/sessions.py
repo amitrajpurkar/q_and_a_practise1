@@ -54,6 +54,21 @@ class NextQuestionResponse(BaseModel):
     session_complete: bool
 
 
+class AnswerRequest(BaseModel):
+    """Answer submission request model."""
+
+    question_id: str
+    answer: str
+
+
+class AnswerResponse(BaseModel):
+    """Answer validation response model."""
+
+    correct: bool
+    correct_answer: str
+    explanation: Optional[str] = None
+
+
 @router.post("/", response_model=SessionResponse)
 async def create_session(request: SessionCreateRequest) -> SessionResponse:
     """
@@ -150,29 +165,42 @@ async def get_session(session_id: str) -> SessionResponse:
         raise HTTPException(status_code=500, detail="Failed to retrieve session")
 
 
-@router.post("/submit-answer")
-async def submit_answer(request: QuestionSubmissionRequest) -> Dict[str, Any]:
+@router.post("/{session_id}/submit-answer", response_model=AnswerResponse)
+async def submit_answer(session_id: str, request: AnswerRequest) -> AnswerResponse:
     """
     Submit an answer for a question in a session.
 
     Args:
-        request: Question submission request
+        session_id: Session identifier
+        request: Answer submission request
 
     Returns:
-        Submission result
+        Answer validation result with feedback
     """
     try:
         container = get_container()
         session_service = container.resolve(ISessionService)
 
-        success = session_service.submit_answer(
-            session_id=request.session_id,
+        result = session_service.validate_answer(
+            session_id=session_id,
             question_id=request.question_id,
             answer=request.answer,
         )
 
-        return {"success": success, "message": "Answer submitted successfully"}
+        return AnswerResponse(
+            correct=result.correct,
+            correct_answer=result.correct_answer,
+            explanation=result.explanation
+        )
 
+    except SessionError as e:
+        logger.warning(f"Session error submitting answer: {str(e)}")
+        raise HTTPException(status_code=404, detail="Session not found")
+    except ValidationError as e:
+        logger.warning(f"Validation error submitting answer: {str(e)}")
+        raise HTTPException(status_code=400, detail={"error": "ValidationError", "message": str(e)})
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to submit answer: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to submit answer")
@@ -211,6 +239,9 @@ async def get_next_question(session_id: str) -> NextQuestionResponse:
             session_complete=False,
         )
 
+    except SessionError as e:
+        logger.warning(f"Session error getting next question: {str(e)}")
+        raise HTTPException(status_code=404, detail="Session not found")
     except Exception as e:
         logger.error(f"Failed to get next question: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to retrieve next question")
