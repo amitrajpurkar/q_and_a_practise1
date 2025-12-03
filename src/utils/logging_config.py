@@ -300,7 +300,7 @@ class LoggingConfig:
 
 
 # Global logging configuration instance
-_logging_config: LoggingConfig
+_logging_config: Optional[LoggingConfig] = None
 
 
 def setup_logging(config: AppConfig) -> LoggingConfig:

@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 import time
 from typing import Dict, Any, Optional
 
-from src.utils.config import AppConfig, get_app_config
+from src.utils.config import get_app_config, load_app_config, AppConfig
 from src.utils.logging_config import setup_logging, get_logger
 from src.utils.exceptions import (
     QAAException,
@@ -21,6 +21,7 @@ from src.utils.exceptions import (
     ScoreError,
 )
 from src.api.routes import topics, difficulties, questions, sessions, scores
+from src.services.di_setup import setup_dependency_injection
 
 
 class QAAFastAPI:
@@ -316,8 +317,8 @@ def create_app(config: Optional[AppConfig] = None) -> FastAPI:
     if config is None:
         config = get_app_config()
 
-    # Setup logging
-    setup_logging(config)
+    # Setup dependencies first ( this will also setup logging)
+    setup_dependency_injection(config)
 
     # Create application
     _app_instance = QAAFastAPI(config)
@@ -356,7 +357,7 @@ if __name__ == "__main__":
     import uvicorn
 
     # Load configuration
-    config = get_app_config()
+    config = load_app_config()
 
     # Create application
     app = create_app(config)
@@ -366,6 +367,5 @@ if __name__ == "__main__":
         app,
         host=config.host,
         port=config.port,
-        debug=config.debug,
-        log_level=config.log_level.lower(),
+        log_level="info"
     )

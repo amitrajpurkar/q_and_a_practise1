@@ -10,6 +10,7 @@ from pydantic import BaseModel
 import logging
 
 from src.services.interfaces import ISessionService
+from src.utils.exceptions import SessionError, ValidationError
 from src.utils.container import get_container
 
 router = APIRouter()
@@ -90,6 +91,24 @@ async def create_session(request: SessionCreateRequest) -> SessionResponse:
 
     except HTTPException:
         raise
+    except ValidationError as e:
+        logger.warning(f"Validation error creating session: {str(e)}")
+        raise HTTPException(
+            status_code=400, 
+            detail={
+                "error": "ValidationError",
+                "message": str(e)
+            }
+        )
+    except SessionError as e:
+        logger.warning(f"Session error creating session: {str(e)}")
+        raise HTTPException(
+            status_code=400, 
+            detail={
+                "error": "SessionError", 
+                "message": str(e)
+            }
+        )
     except Exception as e:
         logger.error(f"Failed to create session: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to create session")

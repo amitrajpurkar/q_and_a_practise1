@@ -206,9 +206,23 @@ class QuestionBank:
         Get list of available difficulty levels.
 
         Returns:
-            List of difficulty names
+            List of difficulty names in logical order (Easy, Medium, Hard)
         """
-        return sorted(self._difficulty_index.keys())
+        difficulty_order = ["Easy", "Medium", "Hard"]
+        available = list(self._difficulty_index.keys())
+        
+        # Return difficulties in the predefined order if they exist
+        ordered_difficulties = []
+        for diff in difficulty_order:
+            if diff in available:
+                ordered_difficulties.append(diff)
+        
+        # Add any other difficulties not in the predefined order
+        for diff in available:
+            if diff not in ordered_difficulties:
+                ordered_difficulties.append(diff)
+        
+        return ordered_difficulties
 
     def get_topic_difficulty_combinations(self) -> List[str]:
         """
