@@ -1,5 +1,5 @@
 # Practice application
-This is a question back application. {+ practise with different tech stack +}
+This is a question back application. <span style="background-color: yellow;"> practise with different tech stack </span>
 
 
 ## features
@@ -14,7 +14,7 @@ This is a question back application. {+ practise with different tech stack +}
 
 
 ## for the kata/ practice
-make use of spec-kit to trial or experiment with different tech-stacks
+make use of spec-kit to trial or {+ experiment with different tech-stacks +}
 
 ## Quick Start - Backend Services
 
