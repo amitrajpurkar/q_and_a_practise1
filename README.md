@@ -1,5 +1,5 @@
 # Practice application
-This is a question back application. $${\color{lightgreen}practise \space with \space different \space tech \space stack }$$
+This is a question back application. $${\color{blue}practise \space with \space different \space tech \space stack }$$
 
 
 ## features
