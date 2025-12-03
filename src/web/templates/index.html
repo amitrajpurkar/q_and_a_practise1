@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}Q&A Practice - Select Topic & Difficulty{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
+            <svg class="h-8 w-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            Welcome to Q&A Practice
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Master Physics, Chemistry, and Math through interactive practice sessions. 
+            Choose your topic and difficulty level to begin your learning journey.
+        </p>
+    </div>
+
+    <!-- Selection Form -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <form id="session-form" hx-post="/api/v1/sessions" hx-target="#form-result" hx-swap="innerHTML">
+            <!-- Topic Selection -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="h-6 w-6 mr-2 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    Select Topic
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="topic-selection">
+                    <!-- Physics Topic -->
+                    <label class="topic-card relative cursor-pointer rounded-lg border-2 border-gray-200 p-6 hover:border-primary-300 transition-all duration-200 group">
+                        <input type="radio" name="topic" value="Physics" class="sr-only peer" required>
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
+                                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Physics</h3>
+                            <p class="text-sm text-gray-600 mb-3">Forces, motion, energy, waves, and more</p>
+                            <div class="topic-stats text-xs text-gray-500">
+                                <span class="question-count">Loading...</span> questions
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <svg class="h-5 w-5 text-primary-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </label>
+
+                    <!-- Chemistry Topic -->
+                    <label class="topic-card relative cursor-pointer rounded-lg border-2 border-gray-200 p-6 hover:border-primary-300 transition-all duration-200 group">
+                        <input type="radio" name="topic" value="Chemistry" class="sr-only peer" required>
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors">
+                                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Chemistry</h3>
+                            <p class="text-sm text-gray-600 mb-3">Elements, reactions, compounds, solutions</p>
+                            <div class="topic-stats text-xs text-gray-500">
+                                <span class="question-count">Loading...</span> questions
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <svg class="h-5 w-5 text-primary-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </label>
+
+                    <!-- Math Topic -->
+                    <label class="topic-card relative cursor-pointer rounded-lg border-2 border-gray-200 p-6 hover:border-primary-300 transition-all duration-200 group">
+                        <input type="radio" name="topic" value="Math" class="sr-only peer" required>
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors">
+                                <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Math</h3>
+                            <p class="text-sm text-gray-600 mb-3">Algebra, geometry, calculus, statistics</p>
+                            <div class="topic-stats text-xs text-gray-500">
+                                <span class="question-count">Loading...</span> questions
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <svg class="h-5 w-5 text-primary-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Difficulty Selection -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="h-6 w-6 mr-2 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Select Difficulty
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="difficulty-selection">
+                    <!-- Easy Difficulty -->
+                    <label class="difficulty-card relative cursor-pointer rounded-lg border-2 border-gray-200 p-6 hover:border-green-300 transition-all duration-200 group">
+                        <input type="radio" name="difficulty" value="Easy" class="sr-only peer" required>
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors">
+                                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Easy</h3>
+                            <p class="text-sm text-gray-600 mb-3">Basic concepts and straightforward problems</p>
+                            <div class="difficulty-stats text-xs text-gray-500">
+                                <span class="question-count">Loading...</span> questions
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <svg class="h-5 w-5 text-green-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </label>
+
+                    <!-- Medium Difficulty -->
+                    <label class="difficulty-card relative cursor-pointer rounded-lg border-2 border-gray-200 p-6 hover:border-yellow-300 transition-all duration-200 group">
+                        <input type="radio" name="difficulty" value="Medium" class="sr-only peer" required>
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-yellow-200 transition-colors">
+                                <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Medium</h3>
+                            <p class="text-sm text-gray-600 mb-3">Intermediate concepts and moderate complexity</p>
+                            <div class="difficulty-stats text-xs text-gray-500">
+                                <span class="question-count">Loading...</span> questions
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <svg class="h-5 w-5 text-yellow-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </label>
+
+                    <!-- Hard Difficulty -->
+                    <label class="difficulty-card relative cursor-pointer rounded-lg border-2 border-gray-200 p-6 hover:border-red-300 transition-all duration-200 group">
+                        <input type="radio" name="difficulty" value="Hard" class="sr-only peer" required>
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-red-200 transition-colors">
+                                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Hard</h3>
+                            <p class="text-sm text-gray-600 mb-3">Advanced concepts and challenging problems</p>
+                            <div class="difficulty-stats text-xs text-gray-500">
+                                <span class="question-count">Loading...</span> questions
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <svg class="h-5 w-5 text-red-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Form Result (HTMX target) -->
+            <div id="form-result" class="mb-6"></div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center">
+                <button type="submit" class="px-8 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Start Practice Session
+                    <div class="htmx-indicator loading-spinner ml-2"></div>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+            <div class="text-3xl font-bold text-primary-600" id="total-questions">-</div>
+            <div class="text-sm text-gray-600 mt-1">Total Questions</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+            <div class="text-3xl font-bold text-success-600" id="completed-sessions">-</div>
+            <div class="text-sm text-gray-600 mt-1">Completed Sessions</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+            <div class="text-3xl font-bold text-warning-600" id="average-score">-</div>
+            <div class="text-sm text-gray-600 mt-1">Average Score</div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-900 text-center mb-8">Why Choose Q&A Practice?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Organized by Topic</h3>
+                <p class="text-gray-600">Focus on specific subjects to master areas where you need improvement.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Progressive Difficulty</h3>
+                <p class="text-gray-600">Start with easy questions and work your way up to challenging problems.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="h-8 w-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Instant Feedback</h3>
+                <p class="text-gray-600">Get immediate feedback on your answers to learn from mistakes quickly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Load question statistics when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadStatistics();
+    
+    // Add change listeners to update question counts dynamically
+    const topicInputs = document.querySelectorAll('input[name="topic"]');
+    const difficultyInputs = document.querySelectorAll('input[name="difficulty"]');
+    
+    topicInputs.forEach(input => {
+        input.addEventListener('change', updateQuestionCounts);
+    });
+    
+    difficultyInputs.forEach(input => {
+        input.addEventListener('change', updateQuestionCounts);
+    });
+    
+    // Initial load of question counts
+    loadTopicQuestionCounts();
+    loadDifficultyQuestionCounts();
+});
+
+function loadStatistics() {
+    fetch('/api/v1/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-questions').textContent = data.total_questions || '0';
+            document.getElementById('completed-sessions').textContent = data.completed_sessions || '0';
+            document.getElementById('average-score').textContent = data.average_score ? data.average_score + '%' : '0%';
+        })
+        .catch(error => {
+            console.error('Failed to load statistics:', error);
+        });
+}
+
+function loadTopicQuestionCounts() {
+    fetch('/api/v1/topics')
+        .then(response => response.json())
+        .then(data => {
+            const topics = ['Physics', 'Chemistry', 'Math'];
+            const topicCards = document.querySelectorAll('.topic-card');
+            
+            topics.forEach((topic, index) => {
+                const countElement = topicCards[index].querySelector('.question-count');
+                if (countElement) {
+                    countElement.textContent = data.topics[topic] || '0';
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Failed to load topic counts:', error);
+        });
+}
+
+function loadDifficultyQuestionCounts() {
+    fetch('/api/v1/difficulties')
+        .then(response => response.json())
+        .then(data => {
+            const difficulties = ['Easy', 'Medium', 'Hard'];
+            const difficultyCards = document.querySelectorAll('.difficulty-card');
+            
+            difficulties.forEach((difficulty, index) => {
+                const countElement = difficultyCards[index].querySelector('.question-count');
+                if (countElement) {
+                    countElement.textContent = data.difficulties[difficulty] || '0';
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Failed to load difficulty counts:', error);
+        });
+}
+
+function updateQuestionCounts() {
+    const selectedTopic = document.querySelector('input[name="topic"]:checked');
+    const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
+    
+    if (selectedTopic && selectedDifficulty) {
+        // Update form validation state
+        const submitButton = document.querySelector('#session-form button[type="submit"]');
+        submitButton.disabled = false;
+    }
+}
+
+// Handle successful session creation
+document.addEventListener('htmx:afterRequest', function(evt) {
+    if (evt.detail.target.id === 'form-result' && evt.detail.successful) {
+        const response = evt.detail.xhr.response;
+        if (response && response.session_id) {
+            // Redirect to quiz page
+            window.location.href = `/quiz/${response.session_id}`;
+        }
+    }
+});
+</script>
+{% endblock %}

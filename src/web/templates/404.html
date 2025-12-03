@@ -1,0 +1,73 @@
+{% extends "error.html" %}
+
+{% block title %}Page Not Found - 404{% endblock %}
+
+{% set error_code = 404 %}
+{% set error_details = "The requested page could not be found." %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+        <!-- 404 Illustration -->
+        <div class="mb-8">
+            <div class="text-9xl font-bold text-gray-200">404</div>
+            <div class="text-2xl font-semibold text-gray-600 mb-4">Oops! Page Not Found</div>
+        </div>
+
+        <!-- Error Message -->
+        <p class="text-lg text-gray-600 mb-8">
+            The page you're looking for doesn't exist or has been moved. 
+            Don't worry, even the best explorers get lost sometimes!
+        </p>
+
+        <!-- Search Bar -->
+        <div class="max-w-md mx-auto mb-8">
+            <form action="/search" method="get" class="flex">
+                <input type="text" 
+                       name="q" 
+                       placeholder="Search for what you need..." 
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-r-lg hover:bg-primary-700 transition-colors">
+                    Search
+                </button>
+            </form>
+        </div>
+
+        <!-- Popular Pages -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Popular Pages</h3>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    Home
+                </a>
+                <a href="/quiz" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    Start Quiz
+                </a>
+                <a href="/topics" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    Topics
+                </a>
+                <a href="/help" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    Help
+                </a>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+            <button onclick="goBack()" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Go Back
+            </button>
+            
+            <a href="/" class="px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                Home Page
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

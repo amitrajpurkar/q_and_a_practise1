@@ -90,6 +90,101 @@ curl -X POST http://localhost:8000/api/v1/sessions/{session_id}/submit-answer \
   -d '{"question_id":"physics_3","answer":"Ampere"}'
 ```
 
+## Frontend User Interfaces
+
+### Command Line Interface (CLI)
+
+**Start the CLI application:**
+```bash
+# Navigate to project root
+cd q_and_a_practise1
+
+# Run the CLI application
+python -m src.cli.main
+
+# Or with verbose logging
+python -m src.cli.main --verbose
+```
+
+**CLI Features:**
+- Interactive topic and difficulty selection
+- Real-time question presentation with answer validation
+- Progress tracking and session summary
+- Keyboard shortcuts for navigation
+- Comprehensive error handling and user feedback
+
+**CLI Usage Example:**
+```bash
+$ python -m src.cli.main
+🎓 Q&A Practice Application
+
+Select a topic:
+1. Physics
+2. Chemistry  
+3. Math
+
+Enter your choice (1-3): 1
+
+Select difficulty:
+1. Easy
+2. Medium
+3. Hard
+
+Enter your choice (1-3): 2
+
+📝 Starting Physics (Medium) session...
+
+Question 1/10:
+What is the SI unit of electric current?
+A) Volt
+B) Ampere
+C) Ohm
+D) Watt
+
+Your answer (A-D): B
+✅ Correct!
+
+[... continues with more questions ...]
+
+📊 Session Summary:
+Topic: Physics (Medium)
+Questions: 10
+Correct: 8
+Accuracy: 80.0%
+Duration: 5 minutes 23 seconds
+```
+
+### Web Interface
+
+**Start the web application:**
+```bash
+# Navigate to project root
+cd q_and_a_practise1
+
+# Start the web server
+python -m src.web.main
+
+# The application will be available at:
+# http://localhost:8000
+```
+
+**Web Features:**
+- Modern responsive design with Tailwind CSS
+- Interactive quiz interface with real-time feedback
+- Dynamic question loading with HTMX
+- Progress tracking and performance analytics
+- Session results with detailed breakdowns
+- Mobile-friendly design with accessibility support
+- Error handling with user-friendly pages
+
+**Web Access:**
+1. Open your browser and go to `http://localhost:8000`
+2. Select your preferred topic (Physics, Chemistry, or Math)
+3. Choose difficulty level (Easy, Medium, or Hard)
+4. Click "Start Quiz" to begin your session
+5. Answer questions using the interactive interface
+6. View your results and performance analytics
+
 ### Running Tests
 
 ```bash
@@ -104,6 +199,7 @@ python -m pytest tests/unit/
 
 ### Key Features Implemented
 
+#### Backend Services
 - ✅ Topic selection (Physics, Chemistry, Math)
 - ✅ Difficulty levels (Easy, Medium, Hard)
 - ✅ Session management with progress tracking
@@ -112,5 +208,26 @@ python -m pytest tests/unit/
 - ✅ RESTful API with OpenAPI documentation
 - ✅ Comprehensive test suite (64 tests passing)
 - ✅ Structured logging and error handling
+
+#### Command Line Interface (CLI)
+- ✅ Interactive topic and difficulty selection prompts
+- ✅ Real-time question presentation with formatted display
+- ✅ Answer collection and validation with immediate feedback
+- ✅ Session summary display with performance metrics
+- ✅ Comprehensive error handling and user input validation
+- ✅ Progress tracking and navigation controls
+- ✅ Verbose logging support for debugging
+
+#### Web Frontend Interface
+- ✅ Modern responsive design with Tailwind CSS
+- ✅ Interactive topic/difficulty selection page with statistics
+- ✅ Dynamic quiz interface with real-time feedback
+- ✅ HTMX-powered question loading without page refreshes
+- ✅ Progress tracking with visual progress bars
+- ✅ Session results with performance analytics and breakdowns
+- ✅ Mobile-responsive design with accessibility support
+- ✅ Error handling with user-friendly error pages
+- ✅ Keyboard shortcuts and enhanced UX features
+- ✅ CSS animations and transitions for better user experience
 
 
