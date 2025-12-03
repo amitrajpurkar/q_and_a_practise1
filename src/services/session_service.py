@@ -200,10 +200,26 @@ class SessionService(ISessionService):
             if not question:
                 raise ValidationError(f"Invalid question ID: {question_id}")
             
-            # Validate answer ( case-insensitive and whitespace trimmed)
+            # Simple selection (if/else) for basic answer validation
             user_answer = answer.strip().lower()
             correct_answer = question.correct_answer.strip().lower()
-            is_correct = user_answer == correct_answer
+            
+            # Basic if/else selection for answer correctness
+            if user_answer == correct_answer:
+                is_correct = True
+                self.logger.debug(f"Answer is correct: {user_answer}")
+            else:
+                is_correct = False
+                self.logger.debug(f"Answer is incorrect: {user_answer} (expected: {correct_answer})")
+            
+            # Additional simple selection for answer format validation
+            if len(user_answer) == 0:
+                raise ValidationError("Answer cannot be empty after stripping")
+            elif len(user_answer) > 100:
+                raise ValidationError("Answer is too long (maximum 100 characters)")
+            else:
+                # Answer length is acceptable
+                pass
             
             # Record answer with score service
             result = self.score_service.record_answer(
@@ -236,6 +252,53 @@ class SessionService(ISessionService):
         except Exception as e:
             self.logger.error(f"Failed to validate answer: {str(e)}")
             raise SessionError(f"Failed to validate answer: {str(e)}", session_id)
+
+    def validate_answer_format(self, answer: str) -> bool:
+        """
+        Simple selection (if/else) demonstration for answer format validation.
+        
+        Args:
+            answer: User's answer to validate
+            
+        Returns:
+            True if format is valid, False otherwise
+        """
+        # Simple selection for format validation
+        if not answer:
+            return False
+        elif answer.strip() == "":
+            return False
+        elif len(answer.strip()) > 200:
+            return False
+        elif not answer.strip()[0].isalnum():
+            return False
+        else:
+            return True
+
+    def determine_answer_feedback(self, is_correct: bool, attempt_count: int) -> str:
+        """
+        Simple selection (if/else) for determining feedback based on answer correctness.
+        
+        Args:
+            is_correct: Whether the answer was correct
+            attempt_count: Number of attempts made
+            
+        Returns:
+            Feedback message string
+        """
+        # Simple selection for feedback determination
+        if is_correct:
+            if attempt_count == 1:
+                return "Excellent! You got it right on the first try!"
+            else:
+                return f"Good job! You got it right after {attempt_count} attempts."
+        else:
+            if attempt_count == 1:
+                return "Not quite right. Try again!"
+            elif attempt_count < 3:
+                return "Keep trying! You're getting closer."
+            else:
+                return "Let's review the material and try a different approach."
     
     def get_next_question(self, session_id: str) -> Optional[Question]:
         """
@@ -436,3 +499,274 @@ class SessionService(ISessionService):
             "topics": list(set(s.topic for s in self._active_sessions.values())),
             "difficulties": list(set(s.difficulty for s in self._active_sessions.values()))
         }
+
+    # Sentinels/flags for game flow and session control
+    def check_session_flow_flags(self, session_id: str) -> Dict[str, bool]:
+        """
+        Check various sentinel flags for session flow control.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary of boolean flags for flow control
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return {
+                'session_exists': False,
+                'session_active': False,
+                'can_continue': False,
+                'should_end': False,
+                'needs_review': False,
+                'has_questions_remaining': False
+            }
+        
+        # Calculate flow control flags
+        flags = {
+            'session_exists': True,
+            'session_active': session.is_active,
+            'can_continue': session.is_active and not session.is_complete(),
+            'should_end': session.is_complete() or not session.is_active,
+            'needs_review': self._should_trigger_review(session),
+            'has_questions_remaining': len(session.questions_asked) < session.total_questions
+        }
+        
+        return flags
+
+    def _should_trigger_review(self, session: UserSession) -> bool:
+        """
+        Internal method to determine if review should be triggered.
+        
+        Args:
+            session: User session to check
+            
+        Returns:
+            True if review should be triggered
+        """
+        # Trigger review if accuracy is below threshold
+        if len(session.user_answers) >= 3:
+            correct_count = sum(1 for qid, answer in session.user_answers.items() 
+                              if self.question_service.get_question_by_id(qid) and 
+                              self.question_service.get_question_by_id(qid).is_correct_answer(answer))
+            accuracy = correct_count / len(session.user_answers)
+            return accuracy < 0.5  # Below 50% accuracy
+        
+        return False
+
+    def get_session_state_sentinel(self, session_id: str) -> str:
+        """
+        Get sentinel value representing current session state.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Sentinel string representing session state
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return "SESSION_NOT_FOUND"
+        
+        if not session.is_active:
+            if session.is_complete():
+                return "SESSION_COMPLETED"
+            else:
+                return "SESSION_INACTIVE"
+        
+        if session.is_complete():
+            return "SESSION_FINISHED"
+        
+        if len(session.user_answers) == 0:
+            return "SESSION_STARTED"
+        
+        if len(session.user_answers) >= session.total_questions:
+            return "SESSION_READY_TO_COMPLETE"
+        
+        if self._should_trigger_review(session):
+            return "SESSION_NEEDS_REVIEW"
+        
+        return "SESSION_IN_PROGRESS"
+
+    def set_session_control_flag(self, session_id: str, flag_name: str, flag_value: bool) -> bool:
+        """
+        Set a control flag for session management.
+        
+        Args:
+            session_id: Session identifier
+            flag_name: Name of the flag to set
+            flag_value: Boolean value for the flag
+            
+        Returns:
+            True if flag was set successfully
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return False
+        
+        # Initialize control flags dictionary if not exists
+        if not hasattr(session, 'control_flags'):
+            session.control_flags = {}
+        
+        # Set the flag
+        session.control_flags[flag_name] = flag_value
+        
+        # Handle special flag cases
+        if flag_name == 'force_end' and flag_value:
+            session.is_active = False
+            self.logger.info(f"Force end flag set for session {session_id}")
+        
+        elif flag_name == 'pause_session' and flag_value:
+            session.is_active = False
+            self.logger.info(f"Pause flag set for session {session_id}")
+        
+        elif flag_name == 'resume_session' and flag_value:
+            session.is_active = True
+            self.logger.info(f"Resume flag set for session {session_id}")
+        
+        elif flag_name == 'enable_hints' and flag_value:
+            self.logger.info(f"Hints enabled for session {session_id}")
+        
+        return True
+
+    def get_session_control_flags(self, session_id: str) -> Dict[str, bool]:
+        """
+        Get all control flags for a session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary of control flags
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return {}
+        
+        # Return control flags or default empty dict
+        return getattr(session, 'control_flags', {})
+
+    def check_game_flow_conditions(self, session_id: str) -> Dict[str, Any]:
+        """
+        Check comprehensive game flow conditions using sentinels and flags.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary with flow conditions and recommendations
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return {
+                'can_continue': False,
+                'reason': 'Session not found',
+                'recommended_action': 'Create new session',
+                'flow_state': 'TERMINATED'
+            }
+        
+        flow_conditions = {
+            'can_continue': True,
+            'reason': 'Session active',
+            'recommended_action': 'Continue with next question',
+            'flow_state': 'NORMAL'
+        }
+        
+        # Check various conditions
+        if not session.is_active:
+            flow_conditions.update({
+                'can_continue': False,
+                'reason': 'Session is inactive',
+                'recommended_action': 'Resume session or create new one',
+                'flow_state': 'PAUSED'
+            })
+        
+        elif session.is_complete():
+            flow_conditions.update({
+                'can_continue': False,
+                'reason': 'Session is complete',
+                'recommended_action': 'View results or start new session',
+                'flow_state': 'COMPLETED'
+            })
+        
+        elif len(session.questions_asked) >= session.total_questions:
+            flow_conditions.update({
+                'can_continue': False,
+                'reason': 'All questions answered',
+                'recommended_action': 'Complete session and view results',
+                'flow_state': 'READY_TO_COMPLETE'
+            })
+        
+        elif self._should_trigger_review(session):
+            flow_conditions.update({
+                'can_continue': True,
+                'reason': 'Low performance detected',
+                'recommended_action': 'Consider reviewing material or adjusting difficulty',
+                'flow_state': 'NEEDS_ATTENTION'
+            })
+        
+        # Check control flags
+        control_flags = self.get_session_control_flags(session_id)
+        if control_flags.get('force_end', False):
+            flow_conditions.update({
+                'can_continue': False,
+                'reason': 'Force end flag set',
+                'recommended_action': 'Session terminated by control flag',
+                'flow_state': 'FORCE_TERMINATED'
+            })
+        
+        elif control_flags.get('pause_session', False):
+            flow_conditions.update({
+                'can_continue': False,
+                'reason': 'Pause flag set',
+                'recommended_action': 'Session paused by control flag',
+                'flow_state': 'CONTROL_PAUSED'
+            })
+        
+        return flow_conditions
+
+    def create_checkpoint_flag(self, session_id: str, checkpoint_name: str) -> bool:
+        """
+        Create a checkpoint flag for session progress tracking.
+        
+        Args:
+            session_id: Session identifier
+            checkpoint_name: Name of the checkpoint
+            
+        Returns:
+            True if checkpoint was created successfully
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return False
+        
+        # Initialize checkpoints if not exists
+        if not hasattr(session, 'checkpoints'):
+            session.checkpoints = {}
+        
+        # Create checkpoint with current state
+        session.checkpoints[checkpoint_name] = {
+            'questions_answered': len(session.user_answers),
+            'questions_asked': len(session.questions_asked),
+            'timestamp': session.start_time,
+            'is_active': session.is_active
+        }
+        
+        self.logger.info(f"Checkpoint '{checkpoint_name}' created for session {session_id}")
+        return True
+
+    def get_session_checkpoints(self, session_id: str) -> Dict[str, Any]:
+        """
+        Get all checkpoint flags for a session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary of checkpoint data
+        """
+        session = self.get_session(session_id)
+        if not session:
+            return {}
+        
+        return getattr(session, 'checkpoints', {})

@@ -48,6 +48,24 @@ class UserSession:
             self.start_time = datetime.now().isoformat()
         self.validate()
 
+    def __str__(self) -> str:
+        """String representation of the session."""
+        return f"UserSession(id={self.session_id}, topic={self.topic}, difficulty={self.difficulty})"
+
+    def __repr__(self) -> str:
+        """Detailed string representation."""
+        return f"UserSession(id='{self.session_id}', topic='{self.topic}', difficulty='{self.difficulty}', questions={self.total_questions}, active={self.is_active})"
+
+    def __eq__(self, other) -> bool:
+        """Equality comparison based on session ID."""
+        if not isinstance(other, UserSession):
+            return False
+        return self.session_id == other.session_id
+
+    def __hash__(self) -> int:
+        """Hash based on session ID for use in sets/dicts."""
+        return hash(self.session_id)
+
     def validate(self) -> None:
         """
         Validate session data following business rules.

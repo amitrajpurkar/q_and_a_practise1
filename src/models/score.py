@@ -60,11 +60,29 @@ class Score:
     updated_at: Optional[str] = None
 
     def __post_init__(self) -> None:
-        """Validate and calculate score data after initialization."""
+        """Initialize score after data loading."""
         if self.created_at is None:
             self.created_at = datetime.now().isoformat()
+        self._validate_score_data()
         self._calculate_accuracy()
-        self.validate()
+
+    def __str__(self) -> str:
+        """String representation of the score."""
+        return f"Score(session={self.session_id}, accuracy={self.accuracy_percentage}%, questions={self.total_questions})"
+
+    def __repr__(self) -> str:
+        """Detailed string representation."""
+        return f"Score(session_id='{self.session_id}', correct={self.correct_answers}/{self.total_questions}, accuracy={self.accuracy_percentage}%)"
+
+    def __eq__(self, other) -> bool:
+        """Equality comparison based on session ID."""
+        if not isinstance(other, Score):
+            return False
+        return self.session_id == other.session_id
+
+    def __hash__(self) -> int:
+        """Hash based on session ID for use in sets/dicts."""
+        return hash(self.session_id)
 
     def validate(self) -> None:
         """

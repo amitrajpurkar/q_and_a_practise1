@@ -369,3 +369,284 @@ class ScoreService(IScoreService):
             self.logger.info(f"Deleted score for session {session_id}")
             return True
         return False
+
+    # User-defined methods with return values for calculations
+    def calculate_performance_metrics(self, session_id: str) -> Dict[str, float]:
+        """
+        Calculate detailed performance metrics for a session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary with calculated performance metrics
+        """
+        score = self.get_score(session_id)
+        if not score:
+            return {
+                'accuracy': 0.0,
+                'speed_score': 0.0,
+                'consistency_score': 0.0,
+                'overall_performance': 0.0
+            }
+        
+        # Calculate accuracy (already available)
+        accuracy = score.accuracy_percentage
+        
+        # Calculate speed score based on time per question
+        if score.total_questions > 0:
+            time_per_question = score.time_taken_seconds / score.total_questions
+            # Optimal time is 30 seconds per question
+            speed_score = max(0.0, 100.0 - (time_per_question - 30) * 2)
+            speed_score = min(100.0, speed_score)
+        else:
+            speed_score = 0.0
+        
+        # Calculate consistency score based on topic performance variance
+        if score.topic_performance:
+            topic_accuracies = []
+            for topic_data in score.topic_performance.values():
+                for difficulty_data in topic_data.values():
+                    if difficulty_data.get('total', 0) > 0:
+                        topic_accuracy = (difficulty_data['correct'] / difficulty_data['total']) * 100
+                        topic_accuracies.append(topic_accuracy)
+            
+            if topic_accuracies:
+                avg_accuracy = sum(topic_accuracies) / len(topic_accuracies)
+                variance = sum((x - avg_accuracy) ** 2 for x in topic_accuracies) / len(topic_accuracies)
+                consistency_score = max(0.0, 100.0 - variance * 2)
+            else:
+                consistency_score = 0.0
+        else:
+            consistency_score = 0.0
+        
+        # Calculate overall performance (weighted average)
+        overall_performance = (accuracy * 0.5 + speed_score * 0.3 + consistency_score * 0.2)
+        
+        return {
+            'accuracy': round(accuracy, 2),
+            'speed_score': round(speed_score, 2),
+            'consistency_score': round(consistency_score, 2),
+            'overall_performance': round(overall_performance, 2)
+        }
+
+    def calculate_learning_progress(self, user_sessions: List[str]) -> Dict[str, Any]:
+        """
+        Calculate learning progress across multiple sessions.
+        
+        Args:
+            user_sessions: List of session IDs for the user
+            
+        Returns:
+            Dictionary with learning progress analytics
+        """
+        if not user_sessions:
+            return {
+                'total_sessions': 0,
+                'improvement_rate': 0.0,
+                'strongest_topics': [],
+                'weakest_topics': [],
+                'learning_trend': 'stable'
+            }
+        
+        session_scores = []
+        topic_performance = {}
+        
+        # Collect data from all sessions
+        for session_id in user_sessions:
+            score = self.get_score(session_id)
+            if score:
+                session_scores.append(score.accuracy_percentage)
+                
+                # Aggregate topic performance
+                for topic, difficulties in score.topic_performance.items():
+                    if topic not in topic_performance:
+                        topic_performance[topic] = {'correct': 0, 'total': 0}
+                    
+                    for difficulty, stats in difficulties.items():
+                        topic_performance[topic]['correct'] += stats['correct']
+                        topic_performance[topic]['total'] += stats['total']
+        
+        # Calculate improvement rate
+        if len(session_scores) > 1:
+            recent_avg = sum(session_scores[-3:]) / min(3, len(session_scores))
+            early_avg = sum(session_scores[:3:]) / min(3, len(session_scores))
+            improvement_rate = recent_avg - early_avg
+        else:
+            improvement_rate = 0.0
+        
+        # Determine strongest and weakest topics
+        topic_accuracies = []
+        for topic, stats in topic_performance.items():
+            if stats['total'] > 0:
+                accuracy = (stats['correct'] / stats['total']) * 100
+                topic_accuracies.append((topic, accuracy))
+        
+        topic_accuracies.sort(key=lambda x: x[1], reverse=True)
+        
+        strongest_topics = [topic for topic, _ in topic_accuracies[:3]]
+        weakest_topics = [topic for topic, _ in topic_accuracies[-3:]]
+        
+        # Determine learning trend
+        if len(session_scores) >= 5:
+            recent_slope = (session_scores[-1] - session_scores[-5]) / 5
+            if recent_slope > 5:
+                learning_trend = 'improving'
+            elif recent_slope < -5:
+                learning_trend = 'declining'
+            else:
+                learning_trend = 'stable'
+        else:
+            learning_trend = 'insufficient_data'
+        
+        return {
+            'total_sessions': len(session_scores),
+            'improvement_rate': round(improvement_rate, 2),
+            'strongest_topics': strongest_topics,
+            'weakest_topics': weakest_topics,
+            'learning_trend': learning_trend,
+            'average_accuracy': round(sum(session_scores) / len(session_scores), 2) if session_scores else 0.0
+        }
+
+    def calculate_difficulty_progression(self, session_id: str) -> Dict[str, List[float]]:
+        """
+        Calculate performance progression by difficulty level.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary with difficulty-specific performance data
+        """
+        score = self.get_score(session_id)
+        if not score or not score.topic_performance:
+            return {
+                'easy_progression': [],
+                'medium_progression': [],
+                'hard_progression': []
+            }
+        
+        difficulty_data = {
+            'easy_progression': [],
+            'medium_progression': [],
+            'hard_progression': []
+        }
+        
+        # Extract performance by difficulty across topics
+        for topic, difficulties in score.topic_performance.items():
+            for difficulty, stats in difficulties.items():
+                if stats['total'] > 0:
+                    accuracy = (stats['correct'] / stats['total']) * 100
+                    
+                    if difficulty.lower() == 'easy':
+                        difficulty_data['easy_progression'].append(accuracy)
+                    elif difficulty.lower() == 'medium':
+                        difficulty_data['medium_progression'].append(accuracy)
+                    elif difficulty.lower() == 'hard':
+                        difficulty_data['hard_progression'].append(accuracy)
+        
+        # Calculate averages for each difficulty
+        for key in difficulty_data:
+            if difficulty_data[key]:
+                avg_accuracy = sum(difficulty_data[key]) / len(difficulty_data[key])
+                difficulty_data[key] = [round(avg_accuracy, 2)]
+            else:
+                difficulty_data[key] = [0.0]
+        
+        return difficulty_data
+
+    def calculate_time_analysis(self, session_id: str) -> Dict[str, Any]:
+        """
+        Calculate time-based performance analysis.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary with time analysis metrics
+        """
+        score = self.get_score(session_id)
+        if not score:
+            return {
+                'total_time': 0,
+                'average_time_per_question': 0.0,
+                'time_efficiency': 0.0,
+                'pacing_analysis': 'no_data'
+            }
+        
+        total_time = score.time_taken_seconds
+        
+        if score.total_questions > 0:
+            avg_time_per_question = total_time / score.total_questions
+            
+            # Time efficiency: optimal is 30 seconds per question
+            optimal_time_per_question = 30.0
+            time_efficiency = max(0.0, 100.0 - abs(avg_time_per_question - optimal_time_per_question) * 2)
+            
+            # Pacing analysis
+            if avg_time_per_question < 20:
+                pacing_analysis = 'too_fast'
+            elif avg_time_per_question > 60:
+                pacing_analysis = 'too_slow'
+            else:
+                pacing_analysis = 'optimal'
+        else:
+            avg_time_per_question = 0.0
+            time_efficiency = 0.0
+            pacing_analysis = 'no_data'
+        
+        return {
+            'total_time': total_time,
+            'average_time_per_question': round(avg_time_per_question, 2),
+            'time_efficiency': round(time_efficiency, 2),
+            'pacing_analysis': pacing_analysis
+        }
+
+    def generate_score_summary(self, session_id: str) -> str:
+        """
+        Generate a textual summary of the score.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Formatted string summary of performance
+        """
+        score = self.get_score(session_id)
+        if not score:
+            return "No score data available for this session."
+        
+        # Get various metrics
+        performance = self.calculate_performance_metrics(session_id)
+        time_analysis = self.calculate_time_analysis(session_id)
+        
+        # Build summary
+        summary_parts = []
+        
+        # Basic performance
+        summary_parts.append(f"Accuracy: {performance['accuracy']:.1f}%")
+        summary_parts.append(f"Overall Performance: {performance['overall_performance']:.1f}%")
+        
+        # Time analysis
+        summary_parts.append(f"Average Time per Question: {time_analysis['average_time_per_question']:.1f} seconds")
+        summary_parts.append(f"Pacing: {time_analysis['pacing_analysis'].replace('_', ' ').title()}")
+        
+        # Topic performance highlights
+        if score.topic_performance:
+            best_topic = None
+            best_accuracy = 0.0
+            
+            for topic, difficulties in score.topic_performance.items():
+                total_correct = sum(stats['correct'] for stats in difficulties.values())
+                total_questions = sum(stats['total'] for stats in difficulties.values())
+                
+                if total_questions > 0:
+                    topic_accuracy = (total_correct / total_questions) * 100
+                    if topic_accuracy > best_accuracy:
+                        best_accuracy = topic_accuracy
+                        best_topic = topic
+            
+            if best_topic:
+                summary_parts.append(f"Strongest Topic: {best_topic} ({best_accuracy:.1f}%)")
+        
+        return " | ".join(summary_parts)

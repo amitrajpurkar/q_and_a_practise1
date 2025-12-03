@@ -119,6 +119,64 @@ class QuestionBank:
         """
         return self.questions.copy()
 
+    def get_questions_slice(self, start: int, end: int) -> List[Question]:
+        """
+        Get a slice of questions using array slicing.
+        
+        Args:
+            start: Start index ( slice)
+            end: End index for slice
+            
+        Returns:
+            List of questions in the specified range
+        """
+        return self.questions[start:end]
+
+    def insert_questions_at(self, index: int, questions: List[Question]) -> None:
+        """
+        Insert multiple questions at a specific index using array operations.
+        
+        Args:
+            index: Position to insert at
+            questions: List of questions to insert
+        """
+        for i, question in enumerate(questions):
+            self.questions.insert(index + i, question)
+        self._rebuild_indexes()
+
+    def remove_questions_range(self, start: int, end: int) -> List[Question]:
+        """
+        Remove questions in a range and returnreturn the removed questions.
+        
+        Args:
+            start: Start index
+            end: End index
+            
+        Returns:
+            List of removed questions
+        """
+        removed = self.questions[start:end]
+        del self.questions[start:end]
+        self._rebuild_indexes()
+        return removed
+
+    def extend_questions(self, questions: List[Question]) -> None:
+        """
+        Extend the questions array with another list using array operations.
+        
+        Args:
+            questions: List of questions to extend with
+        """
+        self.questions.extend(questions)
+        self._rebuild_indexes()
+
+    def clear_questions(self) -> None:
+        """
+        Clear all questions using array operations.
+        """
+        self.questions.clear()
+        self._rebuild_indexes()
+
     def filter_questions(self, criteria: QuestionFilter) -> List[Question]:
         """
         Filter questions based on criteria.
