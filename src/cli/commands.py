@@ -17,11 +17,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.services.question_service import QuestionService
 from src.services.session_service import SessionService
 from src.services.score_service import ScoreService
-from src.services.csv_parser import CSVParser
+from src.services.csv_parser import CSVParserService
 from src.models.question import Question
 from src.models.session import UserSession
 from src.models.score import Score
-from src.utils.config import Config
+from src.utils.config import AppConfig
 from src.utils.exceptions import ValidationError, QuestionError, SessionError
 
 
@@ -33,7 +33,7 @@ class CLICommands:
     including user interaction, session management, and error handling.
     """
     
-    def __init__(self, config: Config):
+    def __init__(self, config: AppConfig):
         """
         Initialize CLI commands with configuration and services.
         
@@ -44,7 +44,7 @@ class CLICommands:
         self.logger = logging.getLogger(__name__)
         
         # Initialize services
-        self.csv_parser = CSVParser()
+        self.csv_parser = CSVParserService()
         self.question_service = QuestionService()
         self.session_service = SessionService()
         self.score_service = ScoreService()

@@ -16,8 +16,8 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.cli.commands import CLICommands
-from src.utils.config import Config
-from src.utils.exceptions import QAApplicationError
+from src.utils.config import AppConfig
+from src.utils.exceptions import QAAException
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -199,11 +199,11 @@ def main() -> int:
         logger = logging.getLogger(__name__)
         
         # Load configuration
-        config = Config()
+        config = AppConfig()
         if args.config:
             config.load_from_file(args.config)
         if args.data_file:
-            config.set('data_file', args.data_file)
+            config.data_file = args.data_file
         
         # Initialize CLI commands
         cli_commands = CLICommands(config)
@@ -242,7 +242,7 @@ def main() -> int:
     except KeyboardInterrupt:
         print("\n\n👋 Session cancelled by user. Goodbye!")
         return 130
-    except Q&AApplicationError as e:
+    except QAAException as e:
         print(f"❌ Error: {e}", file=sys.stderr)
         return 1
     except Exception as e:

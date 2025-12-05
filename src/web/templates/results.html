@@ -252,7 +252,7 @@
  * cannot parse. Lint errors are expected and don't affect functionality. 
  * The code works correctly when rendered by the Flask/Jinja2 engine.
  * 
- * Template variables like {{ session.session_id }} and {{ score|tojson }} are 
+ * Template variables like { { session.session_id } } and { { score|tojson } } are 
  * processed server-side before the JavaScript is executed client-side.
  */
 
@@ -316,18 +316,26 @@ function toggleReview() {
 // Action button functions
 function retrySession() {
     // Create new session with same topic and difficulty
-    const formData = new FormData();
-    formData.append('topic', sessionData.topic);
-    formData.append('difficulty', sessionData.difficulty);
+    const sessionData = {
+        topic: window.SessionConfig.topic,
+        difficulty: window.SessionConfig.difficulty,
+        total_questions: 10
+    };
     
-    fetch('/api/v1/sessions', {
+    fetch('/api/v1/sessions/', {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionData)
     })
     .then(response => response.json())
     .then(data => {
         if (data.session_id) {
             window.location.href = `/quiz/${data.session_id}`;
+        } else {
+            console.error('No session_id in response:', data);
+            window.location.href = '/';
         }
     })
     .catch(error => {
@@ -338,7 +346,7 @@ function retrySession() {
 
 function changeDifficulty() {
     // Go back to home with pre-selected topic
-    window.location.href = `/?topic=${encodeURIComponent(sessionData.topic)}`;
+    window.location.href = `/?topic=${encodeURIComponent(window.SessionConfig.topic)}`;
 }
 
 function newTopic() {
@@ -351,7 +359,7 @@ function goHome() {
 }
 
 function shareResults() {
-    const shareText = `I just completed a ${sessionData.topic} ${sessionData.difficulty} quiz with ${sessionData.score.accuracy.toFixed(1)}% accuracy! 🎯`;
+    const shareText = `I just completed a ${window.SessionConfig.topic} ${window.SessionConfig.difficulty} quiz with ${window.SessionConfig.score.accuracy.toFixed(1)}% accuracy! 🎯`;
     
     if (navigator.share) {
         navigator.share({

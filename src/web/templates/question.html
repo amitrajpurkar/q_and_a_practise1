@@ -1,0 +1,21 @@
+<div class="question-content">
+    <h2 class="text-xl font-semibold text-gray-900 mb-6">{{ question_text }}</h2>
+    
+    <div class="space-y-3">
+        {% for option in options %}
+        <button class="option-button w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-primary-300 transition-all duration-200 flex items-center" 
+                data-answer="{{ option }}" 
+                data-question-text="{{ question_text }}"
+                onclick="selectAnswer(this)">
+            <span class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3 text-sm font-medium">
+                {% if loop.index == 1 %}A{% elif loop.index == 2 %}B{% elif loop.index == 3 %}C{% else %}D{% endif %}
+            </span>
+            <span class="text-gray-700">{{ option }}</span>
+        </button>
+        {% endfor %}
+    </div>
+    
+    <input type="hidden" id="current-question-id" value="{{ id }}">
+    <input type="hidden" id="current-question-text" value="{{ question_text }}">
+    <input type="hidden" id="correct-answer" value="{{ correct_answer }}">
+</div>

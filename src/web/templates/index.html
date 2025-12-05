@@ -22,7 +22,7 @@
 
     <!-- Selection Form -->
     <div class="bg-white rounded-xl shadow-lg p-8">
-        <form id="session-form" hx-post="/api/v1/sessions" hx-target="#form-result" hx-swap="innerHTML">
+        <form id="session-form" onsubmit="return createSession(event);" hx-target="#form-result" hx-swap="innerHTML">
             <!-- Topic Selection -->
             <div class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
@@ -182,6 +182,14 @@
             <!-- Form Result (HTMX target) -->
             <div id="form-result" class="mb-6"></div>
 
+            <!-- Debug Panel -->
+            <div id="debug-panel" class="mb-6 p-4 bg-gray-100 rounded-lg text-sm">
+                <h4 class="font-semibold mb-2">Debug Info:</h4>
+                <div>Selected Topic: <span id="debug-topic" class="font-mono bg-white px-2 py-1 rounded">None</span></div>
+                <div>Selected Difficulty: <span id="debug-difficulty" class="font-mono bg-white px-2 py-1 rounded">None</span></div>
+                <div>Form Ready: <span id="debug-ready" class="font-mono bg-white px-2 py-1 rounded">No</span></div>
+            </div>
+
             <!-- Submit Button -->
             <div class="flex justify-center">
                 <button type="submit" class="px-8 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center">
@@ -258,67 +266,159 @@ document.addEventListener('DOMContentLoaded', function() {
     const topicInputs = document.querySelectorAll('input[name="topic"]');
     const difficultyInputs = document.querySelectorAll('input[name="difficulty"]');
     
-    topicInputs.forEach(input => {
+    console.log('Found topic inputs:', topicInputs.length);
+    console.log('Found difficulty inputs:', difficultyInputs.length);
+    
+    topicInputs.forEach((input, index) => {
+        console.log(`Adding listener to topic input ${index}:`, input.value);
         input.addEventListener('change', updateQuestionCounts);
+        
+        // Also add click handler to the parent label for better UX
+        const label = input.closest('.topic-card');
+        if (label) {
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Topic card clicked:', input.value);
+                
+                // Remove selected class from all topic cards
+                document.querySelectorAll('.topic-card').forEach(card => {
+                    card.classList.remove('selected');
+                    // Reset inline styles
+                    card.style.border = '';
+                    card.style.backgroundColor = '';
+                });
+                
+                // Uncheck all topic inputs
+                document.querySelectorAll('input[name="topic"]').forEach(inp => {
+                    inp.checked = false;
+                });
+                
+                // Add selected class to clicked card and check the input
+                input.checked = true;
+                label.classList.add('selected');
+                
+                // Add temporary visual feedback
+                label.style.border = '3px solid #3b82f6';
+                label.style.backgroundColor = '#eff6ff';
+                
+                updateQuestionCounts();
+                
+                // Log success
+                console.log('Topic selection successful:', input.value);
+            });
+        }
     });
     
-    difficultyInputs.forEach(input => {
+    difficultyInputs.forEach((input, index) => {
+        console.log(`Adding listener to difficulty input ${index}:`, input.value);
         input.addEventListener('change', updateQuestionCounts);
+        
+        // Also add click handler to the parent label for better UX
+        const label = input.closest('.difficulty-card');
+        if (label) {
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Difficulty card clicked:', input.value);
+                
+                // Remove selected class from all difficulty cards
+                document.querySelectorAll('.difficulty-card').forEach(card => {
+                    card.classList.remove('selected');
+                    // Reset inline styles
+                    card.style.border = '';
+                    card.style.backgroundColor = '';
+                });
+                
+                // Uncheck all difficulty inputs
+                document.querySelectorAll('input[name="difficulty"]').forEach(inp => {
+                    inp.checked = false;
+                });
+                
+                // Add selected class to clicked card and check the input
+                input.checked = true;
+                label.classList.add('selected');
+                
+                // Add temporary visual feedback
+                label.style.border = '3px solid #3b82f6';
+                label.style.backgroundColor = '#eff6ff';
+                
+                updateQuestionCounts();
+                
+                // Log success
+                console.log('Difficulty selection successful:', input.value);
+            });
+        }
     });
     
     // Initial load of question counts
     loadTopicQuestionCounts();
     loadDifficultyQuestionCounts();
+    
+    // Initially disable the submit button
+    const submitButton = document.querySelector('#session-form button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        console.log('Submit button initially disabled');
+    }
 });
 
 function loadStatistics() {
-    fetch('/api/v1/stats')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('total-questions').textContent = data.total_questions || '0';
-            document.getElementById('completed-sessions').textContent = data.completed_sessions || '0';
-            document.getElementById('average-score').textContent = data.average_score ? data.average_score + '%' : '0%';
-        })
-        .catch(error => {
-            console.error('Failed to load statistics:', error);
-        });
+    // Stats endpoint not implemented yet, using placeholder data
+    document.getElementById('total-questions').textContent = '30';
+    document.getElementById('completed-sessions').textContent = '0';
+    document.getElementById('average-score').textContent = '0%';
 }
 
 function loadTopicQuestionCounts() {
-    fetch('/api/v1/topics')
+    fetch('/api/v1/topics/')
         .then(response => response.json())
         .then(data => {
-            const topics = ['Physics', 'Chemistry', 'Math'];
+            // API returns simple array, so we need to get counts from question service
             const topicCards = document.querySelectorAll('.topic-card');
-            
-            topics.forEach((topic, index) => {
-                const countElement = topicCards[index].querySelector('.question-count');
+            topicCards.forEach((card, index) => {
+                const countElement = card.querySelector('.question-count');
                 if (countElement) {
-                    countElement.textContent = data.topics[topic] || '0';
+                    // For now, show placeholder counts since we need a separate endpoint for counts
+                    countElement.textContent = '10'; // Placeholder count
                 }
             });
         })
         .catch(error => {
             console.error('Failed to load topic counts:', error);
+            const topicCards = document.querySelectorAll('.topic-card');
+            topicCards.forEach((card) => {
+                const countElement = card.querySelector('.question-count');
+                if (countElement) {
+                    countElement.textContent = '0';
+                }
+            });
         });
 }
 
 function loadDifficultyQuestionCounts() {
-    fetch('/api/v1/difficulties')
+    fetch('/api/v1/difficulties/')
         .then(response => response.json())
         .then(data => {
-            const difficulties = ['Easy', 'Medium', 'Hard'];
+            // API returns simple array, so we need to get counts from question service
             const difficultyCards = document.querySelectorAll('.difficulty-card');
-            
-            difficulties.forEach((difficulty, index) => {
-                const countElement = difficultyCards[index].querySelector('.question-count');
+            difficultyCards.forEach((card, index) => {
+                const countElement = card.querySelector('.question-count');
                 if (countElement) {
-                    countElement.textContent = data.difficulties[difficulty] || '0';
+                    // For now, show placeholder counts since we need a separate endpoint for counts
+                    countElement.textContent = '10'; // Placeholder count
                 }
             });
         })
         .catch(error => {
             console.error('Failed to load difficulty counts:', error);
+            const difficultyCards = document.querySelectorAll('.difficulty-card');
+            difficultyCards.forEach((card) => {
+                const countElement = card.querySelector('.question-count');
+                if (countElement) {
+                    countElement.textContent = '0';
+                }
+            });
         });
 }
 
@@ -326,11 +426,107 @@ function updateQuestionCounts() {
     const selectedTopic = document.querySelector('input[name="topic"]:checked');
     const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
     
+    // Update debug panel
+    const debugTopic = document.getElementById('debug-topic');
+    const debugDifficulty = document.getElementById('debug-difficulty');
+    const debugReady = document.getElementById('debug-ready');
+    
+    debugTopic.textContent = selectedTopic ? selectedTopic.value : 'None';
+    debugDifficulty.textContent = selectedDifficulty ? selectedDifficulty.value : 'None';
+    
     if (selectedTopic && selectedDifficulty) {
         // Update form validation state
         const submitButton = document.querySelector('#session-form button[type="submit"]');
         submitButton.disabled = false;
+        debugReady.textContent = 'Yes';
+        debugReady.className = 'font-mono bg-green-100 text-green-800 px-2 py-1 rounded';
+    } else {
+        const submitButton = document.querySelector('#session-form button[type="submit"]');
+        submitButton.disabled = true;
+        debugReady.textContent = 'No';
+        debugReady.className = 'font-mono bg-red-100 text-red-800 px-2 py-1 rounded';
     }
+}
+
+function createSession(event) {
+    event.preventDefault();
+    
+    const selectedTopic = document.querySelector('input[name="topic"]:checked');
+    const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
+    
+    console.log('Form submission attempted:', {
+        topic: selectedTopic ? selectedTopic.value : 'none',
+        difficulty: selectedDifficulty ? selectedDifficulty.value : 'none'
+    });
+    
+    if (!selectedTopic || !selectedDifficulty) {
+        // Update debug panel with error
+        const formResult = document.getElementById('form-result');
+        formResult.innerHTML = '<div class="p-3 bg-red-100 text-red-700 rounded">Please select both a topic and difficulty level.</div>';
+        return false;
+    }
+    
+    // Show success message in debug panel instead of alert
+    const formResult = document.getElementById('form-result');
+    formResult.innerHTML = `<div class="p-3 bg-green-100 text-green-700 rounded">Ready to create session: ${selectedTopic.value} - ${selectedDifficulty.value}</div>`;
+    
+    const sessionData = {
+        topic: selectedTopic.value,
+        difficulty: selectedDifficulty.value,
+        total_questions: 5
+    };
+    
+    // Show loading state
+    const submitButton = document.querySelector('#session-form button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '<div class="loading-spinner mr-2"></div> Creating...';
+    submitButton.disabled = true;
+    
+    // Make API call to create session
+    fetch('/api/v1/sessions/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.session_id) {
+            // Show success message
+            const formResult = document.getElementById('form-result');
+            formResult.innerHTML = `
+                <div class="p-3 bg-green-100 text-green-700 rounded">
+                    <strong>Session Created Successfully!</strong><br>
+                    Session ID: ${data.session_id}<br>
+                    Redirecting to quiz page...
+                </div>
+            `;
+            
+            // Redirect to quiz page after a short delay
+            setTimeout(() => {
+                window.location.href = `/quiz/${data.session_id}`;
+            }, 1500);
+        } else {
+            throw new Error('No session ID returned');
+        }
+    })
+    .catch(error => {
+        console.error('Failed to create session:', error);
+        const formResult = document.getElementById('form-result');
+        formResult.innerHTML = `
+            <div class="p-3 bg-red-100 text-red-700 rounded">
+                <strong>Failed to create session:</strong> ${error.message}<br>
+                Please try again.
+            </div>
+        `;
+        
+        // Reset button
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+    });
+    
+    return false;
 }
 
 // Handle successful session creation

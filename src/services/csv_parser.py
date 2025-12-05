@@ -11,6 +11,7 @@ from pathlib import Path
 import logging
 
 from src.utils.exceptions import CSVParsingError, ValidationError
+from src.models.question import Question
 
 
 class CSVParserService:

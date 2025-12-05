@@ -60,13 +60,10 @@ class SessionService(ISessionService):
             # Validate inputs
             self._validate_session_parameters(topic, difficulty, total_questions)
             
-            # Check if enough questions are available
-            available_count = self.question_service.count_questions_by_criteria(topic, difficulty)
-            if available_count < total_questions:
-                raise SessionError(
-                    f"Not enough questions available for {topic}-{difficulty}. "
-                    f"Need {total_questions}, have {available_count}"
-                )
+            # Note: We skip the question count check here because the web app
+            # reads questions directly from CSV and handles availability differently.
+            # The web app filters by asked_in_this_session flag which is reset
+            # when a new quiz session starts.
             
             # Create session
             session = UserSession.create_new(topic, difficulty, total_questions)

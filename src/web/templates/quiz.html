@@ -119,7 +119,7 @@
  * cannot parse. Lint errors are expected and don't affect functionality. 
  * The code works correctly when rendered by the Flask/Jinja2 engine.
  * 
- * Template variables like {{ session.session_id }} are processed server-side 
+ * Template variables like { { session.session_id } } are processed server-side 
  * before the JavaScript is executed client-side.
  */
 
@@ -173,8 +173,8 @@ function loadQuestion() {
     // Reset answered state
     quizState.answered = false;
     
-    // Load question via HTMX
-    htmx.ajax('GET', `/api/v1/questions/random?session_id=${quizState.sessionId}`, {
+    // Load question via HTMX with correct parameters
+    htmx.ajax('GET', `/question?topic=${quizState.topic}&difficulty=${quizState.difficulty}`, {
         target: '#question-content',
         swap: 'innerHTML'
     }).then(() => {
@@ -191,15 +191,18 @@ function loadQuestion() {
         const progress = (quizState.currentQuestion / quizState.totalQuestions) * 100;
         document.getElementById('progress-bar').style.width = `${progress}%`;
         
-        // Add event listeners to option buttons
-        const optionButtons = document.querySelectorAll('.option-button');
-        optionButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                if (!quizState.answered) {
-                    selectAnswer(this);
-                }
-            });
-        });
+        // Note: Option buttons already have onclick handlers in the template
+        // No need to add event listeners here - it causes double execution
+    }).catch(error => {
+        console.error('Failed to load question:', error);
+        document.getElementById('loading-state').innerHTML = `
+            <div class="text-center py-12">
+                <p class="text-red-600">Failed to load question. Please try again.</p>
+                <button onclick="loadQuestion()" class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                    Retry
+                </button>
+            </div>
+        `;
     });
 }
 
@@ -210,47 +213,63 @@ function selectAnswer(button) {
     const optionButtons = document.querySelectorAll('.option-button');
     optionButtons.forEach(btn => btn.disabled = true);
     
-    // Get selected answer
+    // Get selected answer and question text
     const selectedAnswer = button.dataset.answer;
-    const questionId = button.dataset.questionId;
+    const questionText = button.dataset.questionText || document.getElementById('current-question-text').value;
     
-    // Submit answer
-    submitAnswer(questionId, selectedAnswer, button);
+    // Submit answer for validation
+    submitAnswer(questionText, selectedAnswer, button);
 }
 
-function submitAnswer(questionId, answer, buttonElement) {
-    const formData = new FormData();
-    formData.append('question_id', questionId);
-    formData.append('answer', answer);
+function submitAnswer(questionText, answer, buttonElement) {
+    // Prevent multiple submissions
+    if (quizState.answered) return;
     
-    htmx.ajax('POST', `/api/v1/sessions/${quizState.sessionId}/answer`, {
+    // Use plain object for HTMX values, not FormData
+    const data = {
+        'question_id': questionText,
+        'answer': answer
+    };
+    
+    console.log('Submitting answer:', data); // Debug log
+    
+    htmx.ajax('POST', `/validate-answer`, {
         target: '#feedback-section',
         swap: 'innerHTML',
-        values: formData
+        values: data
     }).then(() => {
+        // Prevent double counting - check if already processed
+        if (quizState.answered) return;
+        
         // Show feedback
         document.getElementById('feedback-section').classList.remove('hidden');
         
-        // Update stats based on response
-        const feedbackSection = document.getElementById('feedback-section');
-        const isCorrect = feedbackSection.classList.contains('correct-answer');
-        
-        if (isCorrect) {
-            quizState.correctAnswers++;
-            buttonElement.classList.add('correct-answer');
-        } else {
-            quizState.incorrectAnswers++;
-            buttonElement.classList.add('incorrect-answer');
-            // Highlight correct answer
-            const correctButton = document.querySelector(`[data-answer="${feedbackSection.dataset.correctAnswer}"]`);
-            if (correctButton) {
-                correctButton.classList.add('correct-answer');
+        // Add small delay to ensure DOM is updated
+        setTimeout(() => {
+            // Update stats based on response - use global variable set by server
+            const isCorrect = window.lastAnswerCorrect === true;
+            const feedbackSection = document.getElementById('feedback-section');
+            
+            if (isCorrect) {
+                quizState.correctAnswers++;
+                buttonElement.classList.add('correct-answer');
+            } else {
+                quizState.incorrectAnswers++;
+                buttonElement.classList.add('incorrect-answer');
+                // Highlight correct answer
+                if (feedbackSection) {
+                    const correctAnswer = feedbackSection.dataset.correctAnswer;
+                    const correctButton = document.querySelector(`[data-answer="${correctAnswer}"]`);
+                    if (correctButton) {
+                        correctButton.classList.add('correct-answer');
+                    }
+                }
             }
-        }
-        
-        quizState.answered = true;
-        updateStats();
-        showNavigationButtons();
+            
+            quizState.answered = true;
+            updateStats();
+            showNavigationButtons();
+        }, 100); // 100ms delay to ensure DOM is updated
     });
 }
 
@@ -312,7 +331,29 @@ function confirmEndSession() {
 
 function finishQuiz() {
     stopTimer();
-    window.location.href = `/results/${quizState.sessionId}`;
+    
+    // Calculate final stats
+    const totalTime = Math.floor((Date.now() - quizState.startTime) / 1000);
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = totalTime % 60;
+    const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    const totalAttempted = quizState.correctAnswers + quizState.incorrectAnswers;
+    const accuracy = totalAttempted > 0 ? Math.round((quizState.correctAnswers / totalAttempted) * 100) : 0;
+    
+    // Build URL with quiz state parameters
+    const params = new URLSearchParams({
+        topic: quizState.topic,
+        difficulty: quizState.difficulty,
+        total_questions: quizState.totalQuestions,
+        correct_answers: quizState.correctAnswers,
+        incorrect_answers: quizState.incorrectAnswers,
+        skipped_answers: quizState.skippedQuestions,
+        accuracy: accuracy,
+        time_taken: timeString
+    });
+    
+    window.location.href = `/results/${quizState.sessionId}?${params.toString()}`;
 }
 
 // Keyboard shortcuts
