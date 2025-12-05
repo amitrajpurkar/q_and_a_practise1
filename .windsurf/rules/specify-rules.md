@@ -3,6 +3,7 @@
 Auto-generated from all feature plans. Last updated: 2025-12-02
 
 ## Active Technologies
+- CSV file for question bank (question-bank.csv) (001-qa-app)
 
 - Python 3.12 + FastAPI, pandas, Jinja2, HTMX, pytest, uvicorn (001-qa-app)
 
@@ -22,6 +23,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.12: Follow standard conventions
 
 ## Recent Changes
+- 001-qa-app: Added Python 3.12 + FastAPI, pandas, Jinja2, HTMX, pytest, uvicorn
 
 - 001-qa-app: Added Python 3.12 + FastAPI, pandas, Jinja2, HTMX, pytest, uvicorn
 

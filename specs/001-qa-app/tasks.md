@@ -25,10 +25,11 @@ description: "Task list template for feature implementation"
 | Phase 7: User Interface | T084-T096 | 13/13 | Complete |
 | Phase 7.5: User Story 4 | T117-T120 | 4/4 | Complete |
 | Phase 7.6: Bug Fixes | T121-T128 | 8/8 | Complete |
-| Phase 8: Quality Assurance | T097-T106 | 0/10 | Pending |
-| Phase 9: Polish | T107-T116 | 2/10 | In Progress |
+| Phase 8: User Story 5 | T129-T142 | 0/14 | Pending |
+| Phase 9: Quality Assurance | T097-T106 | 0/10 | Pending |
+| Phase 10: Polish | T107-T116 | 2/10 | In Progress |
 
-**Total Progress**: 108/128 tasks completed (84%)
+**Total Progress**: 108/142 tasks completed (76%)
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -281,7 +282,37 @@ description: "Task list template for feature implementation"
 
 ---
 
-## Phase 8: Quality Assurance & Compliance
+## Phase 8: User Story 5 - Question Review on Results Page (Priority: P2)
+
+**Goal**: Display question-by-question breakdown on results page showing user's answers vs correct answers. Show congratulatory message for perfect scores (10/10).
+
+**Independent Test**: Complete a quiz with some incorrect answers and verify review section displays correctly. Complete a perfect session to verify congratulatory message.
+
+### Tests for User Story 5 (REQUIRED) ⚠️
+
+- [ ] T129 [P] [US5] Unit test for QuestionReview model in tests/unit/test_models/test_question_review.py
+- [ ] T130 [P] [US5] Integration test for question review data flow in tests/integration/test_question_review_flow.py
+- [ ] T131 [P] [US5] Unit test for perfect score detection logic in tests/unit/test_services/test_score_service.py
+
+### Implementation for User Story 5
+
+- [ ] T132 [US5] Create QuestionReview model in src/models/question_review.py
+- [ ] T133 [US5] Add questionReviews array to quiz state in src/web/templates/quiz.html
+- [ ] T134 [US5] Track question/answer pairs after each answer validation in quiz.js
+- [ ] T135 [US5] Pass questionReviews data to results page via URL parameters or session storage
+- [ ] T136 [US5] Update results route to accept and parse question review data in src/web/main.py
+- [ ] T137 [US5] Update results.html template to display Question Review section
+- [ ] T138 [US5] Implement conditional display: show congratulatory message for 100% accuracy
+- [ ] T139 [US5] Style Question Review cards with correct (green) and incorrect (red) indicators
+- [ ] T140 [US5] Add question number, question text, user answer, and correct answer to review cards
+- [ ] T141 [US5] Implement collapsible/expandable Question Review section
+- [ ] T142 [US5] Add CLI support for question review display in src/cli/commands.py
+
+**Checkpoint**: User Story 5 should be fully functional and testable independently
+
+---
+
+## Phase 9: Quality Assurance & Compliance
 
 **Purpose**: Ensure all constitutional requirements are met
 
@@ -298,7 +329,7 @@ description: "Task list template for feature implementation"
 
 ---
 
-## Phase 9: Polish & Cross-Cutting Concerns
+## Phase 10: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories
 
@@ -334,6 +365,8 @@ description: "Task list template for feature implementation"
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
 - **User Story 2 (P1)**: Can start after Foundational (Phase 2) - May integrate with US1 but should be independently testable
 - **User Story 3 (P2)**: Can start after Foundational (Phase 2) - Depends on US1 & US2 for complete session workflow
+- **User Story 4 (P3)**: Can start after Phase 7 - About page and navigation
+- **User Story 5 (P2)**: Can start after Phase 7 - Depends on quiz flow being complete for question tracking
 
 ### Within Each User Story
 

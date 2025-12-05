@@ -93,6 +93,24 @@ User can access application information, navigate between pages, and understand 
 2. **Given** the user is on the About page, **When** they view the content, **Then** they see topics, features, and technical details
 3. **Given** the user is on any page, **When** they click "Home" in navigation, **Then** they return to topic selection
 
+---
+
+### User Story 5 - Question Review on Results Page (Priority: P2)
+
+User can review their answers on the results page with a question-by-question breakdown showing what they answered incorrectly and what the correct answer was. If the user answers all questions correctly (10/10), a congratulatory message is displayed instead of the review section.
+
+**Why this priority**: Provides valuable learning feedback by showing users their mistakes and correct answers, enhancing the educational value of the application.
+
+**Independent Test**: Can be tested by completing a quiz session with some incorrect answers and verifying the review section displays correctly, then completing a perfect session to verify the congratulatory message.
+
+**Acceptance Scenarios**:
+
+1. **Given** a session is completed with incorrect answers, **When** the results page loads, **Then** the Question Review section shows each question with user's answer and correct answer
+2. **Given** a session is completed with all correct answers (10/10), **When** the results page loads, **Then** a congratulatory message is displayed instead of question breakdown
+3. **Given** the Question Review section is displayed, **When** viewing a question, **Then** it shows question number, question text, user's answer, and correct answer
+4. **Given** the Question Review section is displayed, **When** viewing incorrect answers, **Then** incorrect answers are visually distinguished from correct answers
+5. **Given** a session is completed, **When** the results page loads, **Then** the question review data is passed from the quiz session
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
@@ -113,6 +131,10 @@ User can access application information, navigate between pages, and understand 
 - **FR-014**: System MUST provide an About page with application information and features
 - **FR-015**: System MUST provide consistent navigation across all web pages
 - **FR-016**: System MUST track questions asked within a session to prevent duplicates
+- **FR-017**: System MUST track each question answered with user's response and correct answer during quiz
+- **FR-018**: System MUST display Question Review section on results page with question-by-question breakdown
+- **FR-019**: System MUST show congratulatory message when user achieves 100% accuracy (all questions correct)
+- **FR-020**: System MUST visually distinguish correct and incorrect answers in the review section
 
 ### Technical Requirements ( Constitution Compliance)
 
@@ -153,6 +175,7 @@ User can access application information, navigate between pages, and understand 
 - **UserSession**: Manages the current practice session including selected topic, difficulty, questions asked, and answers provided
 - **Score**: Tracks user performance including correct answers, total questions, accuracy percentage, and timing information
 - **QuestionBank**: Manages the collection of all questions loaded from CSV file with filtering and search capabilities
+- **QuestionReview**: Tracks individual question responses including question number, question text, user answer, correct answer, and correctness status
 
 ## Success Criteria *(mandatory)*
 
@@ -188,6 +211,8 @@ User can access application information, navigate between pages, and understand 
 - Q: Question Review in Results → A: Show helpful message when detailed review not available; full review is future enhancement
 - Q: Navigation Consistency → A: All pages must have Home and About links in header
 - Q: Question Tracking → A: Mark questions as asked in CSV to prevent duplicates within session
+- Q: Question Review Feature → A: Track each question/answer pair during quiz, display on results page with breakdown
+- Q: Perfect Score Handling → A: Show congratulatory message instead of review when all answers are correct (10/10)
 
 ## Assumptions
 

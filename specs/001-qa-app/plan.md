@@ -9,6 +9,8 @@
 
 Standalone Q&A practice application with dual interfaces (CLI and web) using Python 3.12, UV package manager, pandas for CSV processing, FastAPI backend services, and Jinja2/HTMX frontend. Application loads questions from CSV, allows topic/difficulty selection, provides randomized questions with immediate feedback, tracks scores, and generates session summaries. Architecture follows SOLID principles with 90% test coverage requirement and implementation of 15+ programming concepts.
 
+**New Feature (2025-12-05)**: Question Review on Results Page - Track each question answered during quiz session and display question-by-question breakdown on results page showing user's answer vs correct answer. Display congratulatory message for perfect scores (10/10).
+
 ## Technical Context
 
 **Language/Version**: Python 3.12  
@@ -34,7 +36,7 @@ Standalone Q&A practice application with dual interfaces (CLI and web) using Pyt
 
 ### Test Coverage Requirements
 - [x] 90% minimum test coverage planned - pytest with pytest-cov configured
-- [x] TDD approach ( test-first development) - Test structure defined in plan
+- [x] TDD approach (test-first development) - Test structure defined in plan
 - [x] Unit tests for all business logic - Comprehensive unit test structure
 - [x] Integration tests for service interactions - API endpoint and workflow tests
 - [x] End-to-end tests for user journeys - CLI and web interface tests
@@ -47,8 +49,8 @@ Standalone Q&A practice application with dual interfaces (CLI and web) using Pyt
 
 ### Programming Concepts Implementation
 - [x] Arrays and data structures - Python lists, dictionaries for question storage
-- [x] User-defined objects and records - Question, UserSession, Score dataclasses
-- [x] Simple and complex selection ( if/else, nested if, switch) - Answer validation logic
+- [x] User-defined objects and records - Question, UserSession, Score, QuestionReview dataclasses
+- [x] Simple and complex selection (if/else, nested if, switch) - Answer validation logic
 - [x] Loops and nested loops - Question processing and filtering algorithms
 - [x] User-defined methods with parameters and return values - Service methods
 - [x] Sorting algorithms - Question organization by difficulty
@@ -67,13 +69,13 @@ Standalone Q&A practice application with dual interfaces (CLI and web) using Pyt
 ### Documentation (this feature)
 
 ```text
-specs/[###-feature]/
+specs/001-qa-app/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
 ├── quickstart.md        # Phase 1 output (/speckit.plan command)
 ├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (/speckit.tasks command)
 ```
 
 ### Source Code (repository root)
@@ -84,11 +86,13 @@ src/
 │   ├── __init__.py
 │   ├── question.py
 │   ├── session.py
-│   └── score.py
+│   ├── score.py
+│   └── question_review.py    # NEW: QuestionReview model
 ├── services/
 │   ├── __init__.py
 │   ├── question_service.py
 │   ├── session_service.py
+│   ├── score_service.py
 │   └── csv_parser.py
 ├── api/
 │   ├── __init__.py
@@ -96,6 +100,8 @@ src/
 │   ├── routes/
 │   │   ├── __init__.py
 │   │   ├── questions.py
+│   │   ├── topics.py
+│   │   ├── difficulties.py
 │   │   └── sessions.py
 │   └── dependencies.py
 ├── cli/
@@ -108,13 +114,13 @@ src/
 │   │   ├── css/
 │   │   │   └── style.css    # Tailwind CSS styling
 │   │   └── js/
-│   │       └── quiz.js      # HTMX interactions
+│   │       └── quiz.js      # HTMX interactions + question tracking
 │   └── templates/
 │       ├── base.html        # Base template with navigation
 │       ├── index.html       # Topic/difficulty selection
-│       ├── quiz.html        # Question presentation
+│       ├── quiz.html        # Question presentation + answer tracking
 │       ├── question.html    # Individual question partial
-│       ├── results.html     # Session results summary
+│       ├── results.html     # Session results + Question Review section
 │       ├── about.html       # Application information
 │       ├── error.html       # Error page template
 │       ├── 404.html         # Not found page
@@ -127,12 +133,14 @@ src/
 tests/
 ├── unit/
 │   ├── test_models/
+│   │   └── test_question_review.py  # NEW: QuestionReview tests
 │   ├── test_services/
 │   ├── test_api/
 │   └── test_cli/
 ├── integration/
 │   ├── test_api_endpoints.py
-│   └── test_cli_workflows.py
+│   ├── test_cli_workflows.py
+│   └── test_question_review_flow.py  # NEW: Question review integration tests
 └── contract/
     └── test_api_contracts.py
 
@@ -155,19 +163,61 @@ src/main/resources/question-bank.csv
 | Phase 5 | ✅ Complete | User Story 3 - Score Tracking & Summary |
 | Phase 6 | ✅ Complete | Programming Concepts (15+ concepts) |
 | Phase 7 | ✅ Complete | User Interface (CLI + Web) |
-| Phase 8 | ⏳ Pending | Quality Assurance & Compliance |
-| Phase 9 | ⏳ Pending | Polish & Cross-Cutting Concerns |
+| Phase 7.5 | ✅ Complete | User Story 4 - About Page & Navigation |
+| Phase 7.6 | ✅ Complete | Bug Fixes (2025-12-03 to 2025-12-05) |
+| Phase 8 | ⏳ Pending | User Story 5 - Question Review Feature |
+| Phase 9 | ⏳ Pending | Quality Assurance & Compliance |
+| Phase 10 | ⏳ Pending | Polish & Cross-Cutting Concerns |
 
 ## Recent Updates (2025-12-05)
 
-### Bug Fixes & Enhancements
+### New Feature: Question Review on Results Page (User Story 5)
+- **QuestionReview Model**: New data model to track question responses
+- **Quiz State Tracking**: Track each question/answer pair during quiz session
+- **Results Page Enhancement**: Display question-by-question breakdown
+- **Perfect Score Handling**: Show congratulatory message for 10/10 correct
+- **Visual Distinction**: Color-coded correct/incorrect answers in review
+
+### Bug Fixes & Enhancements (Previous)
 - **About Page**: Added `/about` route and template with application information
 - **Navigation**: Ensured consistent Home/About links across all pages
-- **Question Review**: Improved empty state UI in results page
 - **Answer Validation**: Fixed HTMX form submission for answer checking
 - **Score Tracking**: Fixed counter updates and accuracy calculations
 - **Question Tracking**: Added CSV-based tracking to prevent duplicate questions
 - **Session Management**: Improved session state handling across quiz flow
+
+## Question Review Feature Design
+
+### Data Flow
+1. **Quiz Start**: Initialize empty `questionReviews` array in quiz state
+2. **Answer Submission**: After each answer validation, add review entry:
+   - Question number (1-10)
+   - Question text
+   - User's selected answer
+   - Correct answer
+   - Whether answer was correct (boolean)
+3. **Quiz End**: Pass `questionReviews` array to results page via URL or session
+4. **Results Display**: Render Question Review section based on data
+
+### Conditional Display Logic
+```
+IF accuracy == 100% (all correct):
+    Display congratulatory message
+    Hide question breakdown
+ELSE:
+    Display Question Review section
+    Show each question with:
+        - Question number
+        - Question text
+        - User's answer (red if wrong)
+        - Correct answer (green)
+```
+
+### UI Components
+- **Congratulatory Banner**: Green success message for perfect scores
+- **Question Review Card**: Individual card per question with visual indicators
+- **Correct Answer**: Green background/border, checkmark icon
+- **Incorrect Answer**: Red background/border, X icon, shows correct answer
 
 ## Complexity Tracking
 
@@ -175,5 +225,4 @@ src/main/resources/question-bank.csv
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| N/A | No violations | All requirements met within constitution |
