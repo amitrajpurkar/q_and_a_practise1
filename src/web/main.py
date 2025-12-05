@@ -177,6 +177,11 @@ class QAAWebApp:
             """Main page with topic and difficulty selection."""
             return self.templates.TemplateResponse("index.html", {"request": request})
 
+        @self.app.get("/about", response_class=HTMLResponse, tags=["web"])
+        async def about(request: Request):
+            """About page with application information."""
+            return self.templates.TemplateResponse("about.html", {"request": request})
+
         @self.app.get("/quiz", response_class=HTMLResponse, tags=["web"])
         async def quiz_page(request: Request):
             """Quiz page."""

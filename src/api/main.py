@@ -353,14 +353,15 @@ def get_app() -> FastAPI:
     return _app_instance.get_app()
 
 
+# Module-level app instance for uvicorn
+app = create_app()
+
+
 if __name__ == "__main__":
     import uvicorn
 
     # Load configuration
     config = load_app_config()
-
-    # Create application
-    app = create_app(config)
 
     # Run server
     uvicorn.run(
