@@ -21,6 +21,7 @@ from src.services.csv_parser import CSVParserService
 from src.models.question import Question
 from src.models.session import UserSession
 from src.models.score import Score
+from src.models.question_review import QuestionReview, QuestionReviewList
 from src.utils.config import AppConfig
 from src.utils.exceptions import ValidationError, QuestionError, SessionError
 
@@ -298,6 +299,9 @@ class CLICommands:
         asked_questions = 0
         correct_answers = 0
         
+        # Track question reviews for session summary (User Story 5)
+        question_reviews = QuestionReviewList()
+        
         print(f"\nAnswering {total_questions} questions. Type 'quit' to exit.\n")
         
         for i in range(total_questions):
@@ -321,7 +325,19 @@ class CLICommands:
                     break
                 
                 # Check answer and provide feedback
-                is_correct = self._validate_and_provide_feedback(question, user_answer)
+                is_correct, user_answer_text = self._validate_and_provide_feedback(question, user_answer)
+                
+                # Track question review (User Story 5)
+                review = QuestionReview(
+                    question_number=i + 1,
+                    question_text=question.question_text,
+                    user_answer=user_answer_text,
+                    correct_answer=question.correct_answer,
+                    correct=is_correct,
+                    topic=question.topic,
+                    difficulty=question.difficulty
+                )
+                question_reviews.add(review)
                 
                 # Update session
                 self.session_service.record_answer(session, question.id, is_correct)
@@ -339,8 +355,8 @@ class CLICommands:
                 print("\n\n👋 Session cancelled by user.")
                 break
         
-        # Show session summary
-        self._show_session_summary(session, asked_questions, correct_answers)
+        # Show session summary with question reviews
+        self._show_session_summary(session, asked_questions, correct_answers, question_reviews)
     
     def _present_question(self, question: Question, question_num: int, total: int) -> None:
         """
@@ -396,16 +412,16 @@ class CLICommands:
             except KeyboardInterrupt:
                 return None
     
-    def _validate_and_provide_feedback(self, question: Question, user_answer: str) -> bool:
+    def _validate_and_provide_feedback(self, question: Question, user_answer: str) -> tuple:
         """
         Validate answer and provide immediate feedback.
         
         Args:
             question: Current question
-            user_answer: User's answer
+            user_answer: User's answer (A/B/C/D)
             
         Returns:
-            True if correct, False otherwise
+            Tuple of (is_correct: bool, user_answer_text: str)
         """
         # Map answer letter to option text
         answer_map = {
@@ -431,16 +447,23 @@ class CLICommands:
             print("🌟 Excellent! That was a challenging question.")
         
         print()
-        return is_correct
+        return is_correct, selected_option
     
-    def _show_session_summary(self, session: UserSession, asked: int, correct: int) -> None:
+    def _show_session_summary(
+        self, 
+        session: UserSession, 
+        asked: int, 
+        correct: int,
+        question_reviews: Optional[QuestionReviewList] = None
+    ) -> None:
         """
-        Display session summary with statistics.
+        Display session summary with statistics and question review.
         
         Args:
             session: User session
             asked: Number of questions asked
             correct: Number of correct answers
+            question_reviews: Optional list of question reviews (User Story 5)
         """
         if asked == 0:
             print("\n📊 Session Summary")
@@ -451,7 +474,7 @@ class CLICommands:
         accuracy = (correct / asked) * 100
         
         print(f"\n📊 Session Summary")
-        print("=" * 20)
+        print("=" * 40)
         print(f"Topic: {session.topic}")
         print(f"Difficulty: {session.difficulty}")
         print(f"Questions Answered: {asked}")
@@ -467,6 +490,26 @@ class CLICommands:
             print("📈 Good effort! Keep practicing.")
         else:
             print("💪 Keep practicing! Review the concepts and try again.")
+        
+        # Question Review Section (User Story 5)
+        if question_reviews and question_reviews.total_count > 0:
+            print(f"\n📝 Question Review")
+            print("=" * 40)
+            
+            if question_reviews.is_perfect_score():
+                # Perfect score - show congratulations
+                print("\n🎉 PERFECT SCORE! 🎉")
+                print("Congratulations! You answered all questions correctly!")
+                print("No wrong answers to review - you've mastered this topic!")
+            else:
+                # Show question-by-question breakdown
+                print(f"\nReviewing {question_reviews.incorrect_count} incorrect answer(s):\n")
+                
+                for review in question_reviews.get_incorrect():
+                    print(f"  Q{review.question_number}: {review.question_text[:60]}...")
+                    print(f"     ❌ Your answer: {review.user_answer}")
+                    print(f"     ✅ Correct answer: {review.correct_answer}")
+                    print()
         
         print(f"\nSession ID: {session.session_id}")
         print("Thank you for using Q&A Practice Application! 🎯")

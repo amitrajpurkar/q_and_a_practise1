@@ -135,7 +135,11 @@ let quizState = {
     skippedQuestions: 0,
     startTime: Date.now(),
     currentQuestionId: null,
-    answered: false
+    answered: false,
+    // Question review tracking for User Story 5
+    questionReviews: [],
+    currentQuestionText: '',
+    currentCorrectAnswer: ''
 };
 
 // Timer functionality
@@ -190,6 +194,12 @@ function loadQuestion() {
         // Update progress bar
         const progress = (quizState.currentQuestion / quizState.totalQuestions) * 100;
         document.getElementById('progress-bar').style.width = `${progress}%`;
+        
+        // Capture current question text for review tracking
+        const questionTextEl = document.getElementById('current-question-text');
+        if (questionTextEl) {
+            quizState.currentQuestionText = questionTextEl.value || '';
+        }
         
         // Note: Option buttons already have onclick handlers in the template
         // No need to add event listeners here - it causes double execution
@@ -249,6 +259,17 @@ function submitAnswer(questionText, answer, buttonElement) {
             // Update stats based on response - use global variable set by server
             const isCorrect = window.lastAnswerCorrect === true;
             const feedbackSection = document.getElementById('feedback-section');
+            const correctAnswer = feedbackSection ? feedbackSection.dataset.correctAnswer : answer;
+            
+            // Track question review for results page (User Story 5)
+            const reviewEntry = {
+                question_number: quizState.currentQuestion,
+                question_text: quizState.currentQuestionText || questionText,
+                user_answer: answer,
+                correct_answer: correctAnswer || answer,
+                correct: isCorrect
+            };
+            quizState.questionReviews.push(reviewEntry);
             
             if (isCorrect) {
                 quizState.correctAnswers++;
@@ -257,8 +278,7 @@ function submitAnswer(questionText, answer, buttonElement) {
                 quizState.incorrectAnswers++;
                 buttonElement.classList.add('incorrect-answer');
                 // Highlight correct answer
-                if (feedbackSection) {
-                    const correctAnswer = feedbackSection.dataset.correctAnswer;
+                if (feedbackSection && correctAnswer) {
                     const correctButton = document.querySelector(`[data-answer="${correctAnswer}"]`);
                     if (correctButton) {
                         correctButton.classList.add('correct-answer');
@@ -340,6 +360,10 @@ function finishQuiz() {
     
     const totalAttempted = quizState.correctAnswers + quizState.incorrectAnswers;
     const accuracy = totalAttempted > 0 ? Math.round((quizState.correctAnswers / totalAttempted) * 100) : 0;
+    
+    // Store question reviews in sessionStorage for results page (User Story 5)
+    sessionStorage.setItem('questionReviews', JSON.stringify(quizState.questionReviews));
+    sessionStorage.setItem('isPerfectScore', accuracy === 100 ? 'true' : 'false');
     
     // Build URL with quiz state parameters
     const params = new URLSearchParams({

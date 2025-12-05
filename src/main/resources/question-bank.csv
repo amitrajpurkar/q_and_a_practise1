@@ -59,46 +59,46 @@ Physics,A 2 kg object moving at 5 m/s collides elastically with a stationary 3 k
 Physics,A refrigerator removes 500 J from its cold compartment and rejects 700 J to the room. What is its coefficient of performance?,2.5,1.4,0.71,3.5,2.5,Hard,FALSE,FALSE,Physics-Thermodynamics
 Physics,A wave on a string has amplitude 2 cm and frequency 50 Hz. What is the maximum particle velocity?,6.28 m/s,3.14 m/s,12.56 m/s,1.57 m/s,6.28 m/s,Hard,FALSE,FALSE,Physics-Waves
 Physics,"A capacitor discharges through a resistor. If the time constant is 5 seconds, after how long is the charge 37% of initial?",5 s,2.5 s,10 s,1 s,5 s,Hard,FALSE,FALSE,Physics-Electricity
-Chemistry,What is the atomic number of carbon?,6,12,14,8,6,Easy,TRUE,FALSE,Chemistry-Atomic Structure
-Chemistry,What are the three subatomic particles?,"Protons, neutrons, electrons","Atoms, molecules, ions","Elements, compounds, mixtures","Acids, bases, salts","Protons, neutrons, electrons",Easy,TRUE,FALSE,Chemistry-Atomic Structure
+Chemistry,What is the atomic number of carbon?,6,12,14,8,6,Easy,FALSE,FALSE,Chemistry-Atomic Structure
+Chemistry,What are the three subatomic particles?,"Protons, neutrons, electrons","Atoms, molecules, ions","Elements, compounds, mixtures","Acids, bases, salts","Protons, neutrons, electrons",Easy,FALSE,FALSE,Chemistry-Atomic Structure
 Chemistry,"Which element is in Group 1, Period 1?",Hydrogen,Helium,Lithium,Sodium,Hydrogen,Easy,FALSE,FALSE,Chemistry-Periodic Table
-Chemistry,What type of bond involves sharing electrons?,Covalent bond,Ionic bond,Metallic bond,Hydrogen bond,Covalent bond,Easy,TRUE,FALSE,Chemistry-Bonding
-Chemistry,What is the process of gas to liquid called?,Condensation,Evaporation,Sublimation,Freezing,Condensation,Easy,TRUE,FALSE,Chemistry-States of Matter
+Chemistry,What type of bond involves sharing electrons?,Covalent bond,Ionic bond,Metallic bond,Hydrogen bond,Covalent bond,Easy,FALSE,FALSE,Chemistry-Bonding
+Chemistry,What is the process of gas to liquid called?,Condensation,Evaporation,Sublimation,Freezing,Condensation,Easy,FALSE,FALSE,Chemistry-States of Matter
 Chemistry,What is the pH of pure water?,7,0,14,1,7,Easy,FALSE,FALSE,Chemistry-Acids and Bases
 Chemistry,What is the chemical formula for water?,H₂O,HO,H₂O₂,OH,H₂O,Easy,FALSE,FALSE,Chemistry-Reactions
-Chemistry,What is the simplest hydrocarbon?,Methane,Ethane,Propane,Butane,Methane,Easy,TRUE,FALSE,Chemistry-Organic Chemistry
-Chemistry,What is a homogeneous mixture called?,Solution,Suspension,Colloid,Emulsion,Solution,Easy,TRUE,FALSE,Chemistry-Solutions
-Chemistry,What is the measure of disorder in a system?,Entropy,Enthalpy,Free energy,Heat capacity,Entropy,Easy,TRUE,FALSE,Chemistry-Thermodynamics
+Chemistry,What is the simplest hydrocarbon?,Methane,Ethane,Propane,Butane,Methane,Easy,FALSE,FALSE,Chemistry-Organic Chemistry
+Chemistry,What is a homogeneous mixture called?,Solution,Suspension,Colloid,Emulsion,Solution,Easy,FALSE,FALSE,Chemistry-Solutions
+Chemistry,What is the measure of disorder in a system?,Entropy,Enthalpy,Free energy,Heat capacity,Entropy,Easy,FALSE,FALSE,Chemistry-Thermodynamics
 Chemistry,What affects reaction rate?,"Temperature, concentration, surface area",Only temperature,Only concentration,Only surface area,"Temperature, concentration, surface area",Easy,FALSE,FALSE,Chemistry-Kinetics
 Chemistry,"In a reversible reaction, when do we have equilibrium?",Forward and reverse rates are equal,All reactants are consumed,All products are formed,No reaction occurs,Forward and reverse rates are equal,Easy,FALSE,FALSE,Chemistry-Equilibrium
-Chemistry,What flows in an electrolytic cell?,Ions,Electrons,Atoms,Molecules,Ions,Easy,TRUE,FALSE,Chemistry-Electrochemistry
+Chemistry,What flows in an electrolytic cell?,Ions,Electrons,Atoms,Molecules,Ions,Easy,FALSE,FALSE,Chemistry-Electrochemistry
 Chemistry,What is emitted in alpha decay?,Helium nucleus,Electron,Positron,Neutron,Helium nucleus,Easy,FALSE,FALSE,Chemistry-Nuclear Chemistry
-Chemistry,What gas contributes to global warming?,CO₂,O₂,N₂,H₂,CO₂,Easy,TRUE,FALSE,Chemistry-Environmental Chemistry
+Chemistry,What gas contributes to global warming?,CO₂,O₂,N₂,H₂,CO₂,Easy,FALSE,FALSE,Chemistry-Environmental Chemistry
 Chemistry,What is the main energy currency of cells?,ATP,DNA,RNA,Protein,ATP,Easy,FALSE,FALSE,Chemistry-Biochemistry
 Chemistry,What is the Haber process used for?,Ammonia production,Sulfuric acid production,Petroleum refining,Steel production,Ammonia production,Easy,FALSE,FALSE,Chemistry-Industrial Chemistry
 Chemistry,What technique separates mixtures based on polarity?,Chromatography,Distillation,Filtration,Crystallization,Chromatography,Easy,FALSE,FALSE,Chemistry-Analytical Chemistry
-Chemistry,What is the central atom in a complex called?,Central metal ion,Ligand,Counter ion,Coordinating atom,Central metal ion,Easy,TRUE,FALSE,Chemistry-Coordination Chemistry
+Chemistry,What is the central atom in a complex called?,Central metal ion,Ligand,Counter ion,Coordinating atom,Central metal ion,Easy,FALSE,FALSE,Chemistry-Coordination Chemistry
 Chemistry,What are the four quantum numbers?,"n, l, m, s","x, y, z, t","a, b, c, d","α, β, γ, δ","n, l, m, s",Easy,FALSE,FALSE,Chemistry-Quantum Chemistry
 Chemistry,What is the electron configuration of sodium?,1s²2s²2p⁶3s¹,1s²2s²2p⁶3s²,1s²2s²2p⁶,1s²2s²2p⁶3s¹3p¹,1s²2s²2p⁶3s¹,Medium,FALSE,FALSE,Chemistry-Atomic Structure
 Chemistry,Which molecule has a trigonal planar geometry?,BF₃,H₂O,CH₄,NH₃,BF₃,Medium,FALSE,FALSE,Chemistry-Bonding
-Chemistry,"If ΔH = -100 kJ and ΔS = -200 J/K at 300 K, is the reaction spontaneous?",No,Yes,Equilibrium,Cannot determine,No,Medium,FALSE,FALSE,Chemistry-Thermodynamics
+Chemistry,"If ΔH = -100 kJ and ΔS = -200 J/K at 300 K, is the reaction spontaneous?",No,Yes,Equilibrium,Cannot determine,No,Medium,TRUE,FALSE,Chemistry-Thermodynamics
 Chemistry,"For the reaction N₂ + 3H₂ ⇌ 2NH₃, Kc = 0.5. If [N₂] = 0.1 M, [H₂] = 0.3 M, what is [NH₃]?",0.087 M,0.174 M,0.043 M,0.130 M,0.087 M,Medium,FALSE,FALSE,Chemistry-Equilibrium
 Chemistry,A reaction has rate constant k = 0.01 s⁻¹. What is its half-life?,69.3 s,100 s,50 s,138.6 s,69.3 s,Medium,FALSE,FALSE,Chemistry-Kinetics
-Chemistry,What is the pH of 0.01 M HCl solution?,2,1,3,4,2,Medium,FALSE,FALSE,Chemistry-Acids and Bases
-Chemistry,How many grams of NaCl are needed to make 250 mL of 0.5 M solution?,7.3 g,14.6 g,3.65 g,29.2 g,7.3 g,Medium,FALSE,FALSE,Chemistry-Solutions
-Chemistry,What is the IUPAC name for CH₃CH₂CH₂CH₃?,Butane,Propane,Ethane,Pentane,Butane,Medium,FALSE,FALSE,Chemistry-Organic Chemistry
-Chemistry,"In the reaction 2Fe + 3Cu²⁺ → 2Fe³⁺ + 3Cu, what is oxidized?",Fe,Cu²⁺,Fe³⁺,Cu,Fe,Medium,FALSE,FALSE,Chemistry-Redox
+Chemistry,What is the pH of 0.01 M HCl solution?,2,1,3,4,2,Medium,TRUE,FALSE,Chemistry-Acids and Bases
+Chemistry,How many grams of NaCl are needed to make 250 mL of 0.5 M solution?,7.3 g,14.6 g,3.65 g,29.2 g,7.3 g,Medium,TRUE,FALSE,Chemistry-Solutions
+Chemistry,What is the IUPAC name for CH₃CH₂CH₂CH₃?,Butane,Propane,Ethane,Pentane,Butane,Medium,TRUE,FALSE,Chemistry-Organic Chemistry
+Chemistry,"In the reaction 2Fe + 3Cu²⁺ → 2Fe³⁺ + 3Cu, what is oxidized?",Fe,Cu²⁺,Fe³⁺,Cu,Fe,Medium,TRUE,FALSE,Chemistry-Redox
 Chemistry,"At STP, what volume does 2 moles of ideal gas occupy?",44.8 L,22.4 L,11.2 L,67.2 L,44.8 L,Medium,FALSE,FALSE,Chemistry-Gases
-Chemistry,How much heat is needed to melt 100 g of ice at 0°C?,33.4 kJ,4.18 kJ,2.26 kJ,6.68 kJ,33.4 kJ,Medium,FALSE,FALSE,Chemistry-Thermodynamics
+Chemistry,How much heat is needed to melt 100 g of ice at 0°C?,33.4 kJ,4.18 kJ,2.26 kJ,6.68 kJ,33.4 kJ,Medium,TRUE,FALSE,Chemistry-Thermodynamics
 Chemistry,"For the equilibrium 2SO₂ + O₂ ⇌ 2SO₃, if pressure increases, what happens?",Shifts right,Shifts left,No change,Reaction stops,Shifts right,Medium,FALSE,FALSE,Chemistry-Equilibrium
-Chemistry,"If temperature increases from 300 K to 310 K, by what factor does rate approximately double?",2,1.5,3,4,2,Medium,FALSE,FALSE,Chemistry-Kinetics
+Chemistry,"If temperature increases from 300 K to 310 K, by what factor does rate approximately double?",2,1.5,3,4,2,Medium,TRUE,FALSE,Chemistry-Kinetics
 Chemistry,What is the pOH of a solution with pH = 11?,3,11,7,14,3,Medium,FALSE,FALSE,Chemistry-Acids and Bases
 Chemistry,What is the molality of 58.44 g NaCl in 500 g water?,2 m,1 m,4 m,0.5 m,2 m,Medium,FALSE,FALSE,Chemistry-Solutions
 Chemistry,What type of reaction is CH₄ + Cl₂ → CH₃Cl + HCl?,Substitution,Addition,Elimination,Polymerization,Substitution,Medium,FALSE,FALSE,Chemistry-Organic Chemistry
 Chemistry,Balance: Cu + Ag⁺ → Cu²⁺ + Ag,Cu + 2Ag⁺ → Cu²⁺ + 2Ag,2Cu + Ag⁺ → 2Cu²⁺ + Ag,Cu + Ag⁺ → Cu²⁺ + Ag,2Cu + 2Ag⁺ → 2Cu²⁺ + 2Ag,Cu + 2Ag⁺ → Cu²⁺ + 2Ag,Medium,FALSE,FALSE,Chemistry-Redox
-Chemistry,A gas at 2 atm and 300 K is compressed to 1 atm at constant temperature. What happens to volume?,Doubles,Halves,Stays same,Triples,Doubles,Medium,FALSE,FALSE,Chemistry-Gases
-Chemistry,"For reaction A → B, ΔH = -50 kJ/mol. Is it exothermic?",Yes,No,Equilibrium,Cannot tell,Yes,Medium,FALSE,FALSE,Chemistry-Thermodynamics
-Chemistry,The equilibrium constant for A + B ⇌ C is 10. What is K for C ⇌ A + B?,0.1,10,1,100,0.1,Medium,FALSE,FALSE,Chemistry-Equilibrium
+Chemistry,A gas at 2 atm and 300 K is compressed to 1 atm at constant temperature. What happens to volume?,Doubles,Halves,Stays same,Triples,Doubles,Medium,TRUE,FALSE,Chemistry-Gases
+Chemistry,"For reaction A → B, ΔH = -50 kJ/mol. Is it exothermic?",Yes,No,Equilibrium,Cannot tell,Yes,Medium,TRUE,FALSE,Chemistry-Thermodynamics
+Chemistry,The equilibrium constant for A + B ⇌ C is 10. What is K for C ⇌ A + B?,0.1,10,1,100,0.1,Medium,TRUE,FALSE,Chemistry-Equilibrium
 Chemistry,What is the wavelength of an electron moving at 10⁶ m/s?,0.727 nm,0.364 nm,1.455 nm,0.182 nm,0.727 nm,Hard,FALSE,FALSE,Chemistry-Atomic Structure
 Chemistry,"Calculate ΔG for reaction at 298 K: ΔH = -100 kJ, ΔS = -200 J/K",-40.4 kJ,-159.6 kJ,-100 kJ,-59.6 kJ,-40.4 kJ,Hard,FALSE,FALSE,Chemistry-Thermodynamics
 Chemistry,"For 2NO₂ ⇌ N₂O₄, Kp = 5 at 298 K. If total pressure is 3 atm, what fraction is N₂O₄?",0.65,0.35,0.50,0.80,0.65,Hard,FALSE,FALSE,Chemistry-Equilibrium
