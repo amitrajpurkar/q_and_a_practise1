@@ -126,8 +126,8 @@ class CSVParserService:
             )
         validated["topic"] = topic
 
-        # Validate question text
-        question_text = str(question.get("question", "")).strip()
+        # Validate question text (check both 'question' and 'question_text' for compatibility)
+        question_text = str(question.get("question_text", question.get("question", ""))).strip()
         if not question_text:
             raise ValidationError(f"Row {row_index+1}: Question text cannot be empty")
         if len(question_text) < 10:
@@ -154,8 +154,8 @@ class CSVParserService:
         validated["option3"] = options[2]
         validated["option4"] = options[3]
 
-        # Validate correct answer
-        correct_answer = str(question.get("answer", "")).strip()
+        # Validate correct answer (check both 'answer' and 'correct_answer' for compatibility)
+        correct_answer = str(question.get("correct_answer", question.get("answer", ""))).strip()
         if not correct_answer:
             raise ValidationError(f"Row {row_index+1}: Correct answer cannot be empty")
         if correct_answer not in options:

@@ -427,3 +427,204 @@ class TestQuestionEntityValidation:
         assert question.asked_in_session is False
         assert question.got_right is False
         assert question.updated_at is not None
+
+
+class TestQuestionStringRepresentations:
+    """Unit tests for Question string representations."""
+
+    @pytest.fixture
+    def sample_question(self) -> Question:
+        """Create a sample question."""
+        return Question(
+            id="physics_1",
+            topic="Physics",
+            question_text="What is Newton's first law of motion?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+
+    def test_str_representation(self, sample_question: Question) -> None:
+        """Test __str__ method."""
+        str_repr = str(sample_question)
+        
+        assert "physics_1" in str_repr
+        assert "Physics" in str_repr
+        assert "Easy" in str_repr
+
+    def test_repr_representation(self, sample_question: Question) -> None:
+        """Test __repr__ method."""
+        repr_str = repr(sample_question)
+        
+        assert "physics_1" in repr_str
+        assert "Physics" in repr_str
+
+
+class TestQuestionEquality:
+    """Unit tests for Question equality and hashing."""
+
+    def test_equality_same_id(self) -> None:
+        """Test that questions with same ID are equal."""
+        q1 = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="Question 1?",
+            option1="A",
+            option2="B",
+            option3="C",
+            option4="D",
+            correct_answer="A",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        q2 = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="Different text?",
+            option1="A",
+            option2="B",
+            option3="C",
+            option4="D",
+            correct_answer="A",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        
+        assert q1 == q2
+
+    def test_equality_different_id(self) -> None:
+        """Test that questions with different IDs are not equal."""
+        q1 = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="What is Newton's first law?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        q2 = Question(
+            id="q_2",
+            topic="Physics",
+            question_text="What is Newton's first law?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        
+        assert q1 != q2
+
+    def test_equality_with_non_question(self) -> None:
+        """Test equality with non-Question object."""
+        q = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="What is Newton's first law?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        
+        assert q != "not a question"
+        assert q != 123
+
+    def test_hash_same_id(self) -> None:
+        """Test that questions with same ID have same hash."""
+        q1 = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="Question 1?",
+            option1="A",
+            option2="B",
+            option3="C",
+            option4="D",
+            correct_answer="A",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        q2 = Question(
+            id="q_1",
+            topic="Chemistry",
+            question_text="Question 2?",
+            option1="A",
+            option2="B",
+            option3="C",
+            option4="D",
+            correct_answer="A",
+            difficulty="Hard",
+            tag="Chemistry-Hard"
+        )
+        
+        assert hash(q1) == hash(q2)
+
+    def test_questions_in_set(self) -> None:
+        """Test that questions can be used in sets."""
+        q1 = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="What is Newton's first law?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        q2 = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="What is Newton's second law?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        
+        question_set = {q1, q2}
+        assert len(question_set) == 1
+
+
+class TestQuestionGetOptions:
+    """Unit tests for get_options method."""
+
+    def test_get_options(self) -> None:
+        """Test get_options returns all options."""
+        q = Question(
+            id="q_1",
+            topic="Physics",
+            question_text="What is Newton's first law?",
+            option1="Inertia",
+            option2="F=ma",
+            option3="Action-reaction",
+            option4="Gravity",
+            correct_answer="Inertia",
+            difficulty="Easy",
+            tag="Physics-Easy"
+        )
+        
+        options = q.get_options()
+        
+        assert len(options) == 4
+        assert "Inertia" in options
+        assert "F=ma" in options
+        assert "Action-reaction" in options
+        assert "Gravity" in options

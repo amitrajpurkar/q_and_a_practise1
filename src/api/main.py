@@ -353,8 +353,17 @@ def get_app() -> FastAPI:
     return _app_instance.get_app()
 
 
-# Module-level app instance for uvicorn
-app = create_app()
+# Module-level app instance for uvicorn (lazy initialization)
+# Only create app when running directly, not when imported for testing
+app = None
+
+
+def get_app():
+    """Get or create the FastAPI application instance."""
+    global app
+    if app is None:
+        app = create_app()
+    return app
 
 
 if __name__ == "__main__":
@@ -362,6 +371,9 @@ if __name__ == "__main__":
 
     # Load configuration
     config = load_app_config()
+    
+    # Create app
+    app = create_app()
 
     # Run server
     uvicorn.run(

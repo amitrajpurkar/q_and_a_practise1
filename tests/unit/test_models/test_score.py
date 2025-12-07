@@ -385,3 +385,111 @@ class TestScoreModel:
         
         assert score1 == score2
         assert score1 != score3
+
+
+class TestScoreStringRepresentations:
+    """Unit tests for Score string representations."""
+
+    @pytest.fixture
+    def sample_score(self) -> Score:
+        """Create a sample score."""
+        return Score(
+            session_id="test-session",
+            total_questions=10,
+            correct_answers=7,
+            incorrect_answers=3,
+            accuracy_percentage=70.0,
+            time_taken_seconds=300,
+            topic_performance={},
+            streak_data={}
+        )
+
+    def test_str_representation(self, sample_score: Score) -> None:
+        """Test __str__ method."""
+        str_repr = str(sample_score)
+        
+        assert "test-ses" in str_repr  # Session ID may be truncated
+        assert "70" in str_repr
+
+    def test_repr_representation(self, sample_score: Score) -> None:
+        """Test __repr__ method."""
+        repr_str = repr(sample_score)
+        
+        assert "test-session" in repr_str
+        assert "7" in repr_str
+
+
+class TestScoreHash:
+    """Unit tests for Score hashing."""
+
+    def test_hash_same_session_id(self) -> None:
+        """Test that scores with same session ID have same hash."""
+        score1 = Score(
+            session_id="test",
+            total_questions=5,
+            correct_answers=3,
+            incorrect_answers=2,
+            accuracy_percentage=60.0,
+            time_taken_seconds=200,
+            topic_performance={},
+            streak_data={}
+        )
+        score2 = Score(
+            session_id="test",
+            total_questions=10,
+            correct_answers=8,
+            incorrect_answers=2,
+            accuracy_percentage=80.0,
+            time_taken_seconds=400,
+            topic_performance={},
+            streak_data={}
+        )
+        
+        assert hash(score1) == hash(score2)
+
+    def test_scores_in_set(self) -> None:
+        """Test that scores can be used in sets."""
+        score1 = Score(
+            session_id="test",
+            total_questions=5,
+            correct_answers=3,
+            incorrect_answers=2,
+            accuracy_percentage=60.0,
+            time_taken_seconds=200,
+            topic_performance={},
+            streak_data={}
+        )
+        score2 = Score(
+            session_id="test",
+            total_questions=10,
+            correct_answers=8,
+            incorrect_answers=2,
+            accuracy_percentage=80.0,
+            time_taken_seconds=400,
+            topic_performance={},
+            streak_data={}
+        )
+        
+        score_set = {score1, score2}
+        assert len(score_set) == 1
+
+
+class TestScoreEqualityWithNonScore:
+    """Unit tests for Score equality with non-Score objects."""
+
+    def test_equality_with_non_score(self) -> None:
+        """Test equality with non-Score object."""
+        score = Score(
+            session_id="test",
+            total_questions=5,
+            correct_answers=3,
+            incorrect_answers=2,
+            accuracy_percentage=60.0,
+            time_taken_seconds=200,
+            topic_performance={},
+            streak_data={}
+        )
+        
+        assert score != "not a score"
+        assert score != 123
+        assert score != None

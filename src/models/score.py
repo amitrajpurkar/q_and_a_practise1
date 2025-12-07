@@ -63,7 +63,7 @@ class Score:
         """Initialize score after data loading."""
         if self.created_at is None:
             self.created_at = datetime.now().isoformat()
-        self._validate_score_data()
+        self.validate()
         self._calculate_accuracy()
 
     def __str__(self) -> str:

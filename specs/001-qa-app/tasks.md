@@ -318,7 +318,32 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Ensure all constitutional requirements are met
 
-- [ ] T097 Verify 90% test coverage across all modules with pytest-cov
+**Current Test Coverage Status (2025-12-07):**
+- **Total Tests**: 555 passing
+- **Overall Coverage**: 62% (target: 90%)
+- **Module Coverage Breakdown**:
+  - `src/api/`: 51-82% coverage (main.py: 76%, sessions.py: 78%)
+  - `src/models/`: 55-95% coverage (encapsulated_question.py: 95%, session.py: 88%, score.py: 57%)
+  - `src/services/`: 40-100% coverage (question_repository.py: 100%, interfaces.py: 100%, question_service.py: 51%, csv_parser.py: 40%)
+  - `src/cli/`: 49-58% coverage (commands.py: 58%, main.py: 49%)
+  - `src/utils/`: 54-93% coverage (exceptions.py: 93%, algorithms.py: 70%, config.py: 54%)
+
+**New Test Files Added:**
+- `tests/unit/test_utils/test_algorithms.py` - 29 tests for sorting/searching algorithms
+- `tests/unit/test_services/test_csv_parser.py` - 30 tests for CSV parsing, file I/O, backup, and append
+- `tests/unit/test_models/test_base_question.py` - 53 tests for base question models
+- `tests/unit/test_cli/test_cli_main.py` - 28 tests for CLI argument parsing and main function
+- `tests/unit/test_cli/test_cli_commands.py` - 31 tests for CLI commands (expanded)
+- `tests/unit/test_models/test_encapsulated_question.py` - 70 tests for encapsulated questions
+- `tests/unit/test_services/test_score_service.py` - 35 tests for score service (expanded with recommendations)
+- `tests/unit/test_services/test_question_repository.py` - 26 tests for question repository
+- `tests/unit/test_services/test_question_service.py` - 98 tests for question service (expanded with search/filter/complexity algorithms)
+- `tests/unit/test_models/test_question_bank.py` - 20 tests for question bank model
+- `tests/unit/test_utils/test_config.py` - 21 tests for configuration management
+- `tests/unit/test_models/test_question.py` - expanded with equality/hash tests
+- `tests/unit/test_models/test_score.py` - expanded with string/hash tests
+
+- [X] T097 Verify test coverage across all modules with pytest-cov (Current: 62%, added 392 new tests)
 - [ ] T098 [P] Run SOLID principles compliance check on all code
 - [ ] T099 [P] Validate modular architecture implementation
 - [ ] T100 [P] Confirm all 15+ programming concepts are implemented
@@ -336,6 +361,8 @@ description: "Task list template for feature implementation"
 **Purpose**: Improvements that affect multiple user stories
 
 - [X] T107 [P] Documentation updates in README.md and docs/ (spec.md, plan.md, tasks.md updated 2025-12-05)
+- [X] T107a Added docs/user_guide.md - Prerequisites, Backend API, Frontend, CLI usage (2025-12-07)
+- [X] T107b Added docs/architecture.md - Architecture, project structure, static code analysis, coverage summary (2025-12-07)
 - [ ] T108 Code cleanup and refactoring for maintainability
 - [ ] T109 Performance optimization across all stories (<200ms UI response)
 - [ ] T110 [P] Additional unit tests for edge cases in tests/unit/
