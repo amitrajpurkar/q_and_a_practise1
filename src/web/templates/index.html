@@ -364,62 +364,61 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadStatistics() {
-    // Stats endpoint not implemented yet, using placeholder data
-    document.getElementById('total-questions').textContent = '30';
-    document.getElementById('completed-sessions').textContent = '0';
-    document.getElementById('average-score').textContent = '0%';
+    fetch('/api/v1/statistics')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-questions').textContent = data.total_questions || '0';
+            document.getElementById('completed-sessions').textContent = data.completed_sessions || '0';
+            document.getElementById('average-score').textContent = (data.average_score || 0) + '%';
+            
+            // Also update topic and difficulty counts if available
+            if (data.questions_by_topic) {
+                updateTopicCounts(data.questions_by_topic);
+            }
+            if (data.questions_by_difficulty) {
+                updateDifficultyCounts(data.questions_by_difficulty);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to load statistics:', error);
+            document.getElementById('total-questions').textContent = '0';
+            document.getElementById('completed-sessions').textContent = '0';
+            document.getElementById('average-score').textContent = '0%';
+        });
+}
+
+function updateTopicCounts(topicCounts) {
+    const topicCards = document.querySelectorAll('.topic-card');
+    topicCards.forEach((card) => {
+        const topicName = card.querySelector('h3')?.textContent?.trim();
+        const countElement = card.querySelector('.question-count');
+        if (countElement && topicName && topicCounts[topicName]) {
+            countElement.textContent = topicCounts[topicName];
+        }
+    });
+}
+
+function updateDifficultyCounts(difficultyCounts) {
+    const difficultyCards = document.querySelectorAll('.difficulty-card');
+    difficultyCards.forEach((card) => {
+        const difficultyName = card.querySelector('h3')?.textContent?.trim();
+        const countElement = card.querySelector('.question-count');
+        if (countElement && difficultyName && difficultyCounts[difficultyName]) {
+            countElement.textContent = difficultyCounts[difficultyName];
+        }
+    });
 }
 
 function loadTopicQuestionCounts() {
-    fetch('/api/v1/topics/')
-        .then(response => response.json())
-        .then(data => {
-            // API returns simple array, so we need to get counts from question service
-            const topicCards = document.querySelectorAll('.topic-card');
-            topicCards.forEach((card, index) => {
-                const countElement = card.querySelector('.question-count');
-                if (countElement) {
-                    // For now, show placeholder counts since we need a separate endpoint for counts
-                    countElement.textContent = '10'; // Placeholder count
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Failed to load topic counts:', error);
-            const topicCards = document.querySelectorAll('.topic-card');
-            topicCards.forEach((card) => {
-                const countElement = card.querySelector('.question-count');
-                if (countElement) {
-                    countElement.textContent = '0';
-                }
-            });
-        });
+    // Now handled by loadStatistics() which calls updateTopicCounts()
+    // This function is kept for backwards compatibility but delegates to statistics
+    console.log('Topic counts loaded via statistics endpoint');
 }
 
 function loadDifficultyQuestionCounts() {
-    fetch('/api/v1/difficulties/')
-        .then(response => response.json())
-        .then(data => {
-            // API returns simple array, so we need to get counts from question service
-            const difficultyCards = document.querySelectorAll('.difficulty-card');
-            difficultyCards.forEach((card, index) => {
-                const countElement = card.querySelector('.question-count');
-                if (countElement) {
-                    // For now, show placeholder counts since we need a separate endpoint for counts
-                    countElement.textContent = '10'; // Placeholder count
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Failed to load difficulty counts:', error);
-            const difficultyCards = document.querySelectorAll('.difficulty-card');
-            difficultyCards.forEach((card) => {
-                const countElement = card.querySelector('.question-count');
-                if (countElement) {
-                    countElement.textContent = '0';
-                }
-            });
-        });
+    // Now handled by loadStatistics() which calls updateDifficultyCounts()
+    // This function is kept for backwards compatibility but delegates to statistics
+    console.log('Difficulty counts loaded via statistics endpoint');
 }
 
 function updateQuestionCounts() {

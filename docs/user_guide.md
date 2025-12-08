@@ -319,7 +319,7 @@ uv run uvicorn src.web.main:app --reload --port 8000
 # 3. Or start API-only backend
 uv run uvicorn src.api.main:app --reload --port 8000
 
-# to stop the server
+# to stop the server press Ctrl+C .. else use the following command
 lsof -ti :8000 | xargs kill -9 2>/dev/null; echo "Server stopped"
 
 # 4. Or use CLI instead

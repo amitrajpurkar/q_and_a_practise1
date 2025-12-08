@@ -19,24 +19,24 @@ Physics,What is temperature?,Measure of average kinetic energy of particles,Meas
 Physics,What is frequency?,Number of waves per second,Height of a wave,Distance between wave crests,Speed of a wave,Number of waves per second,Easy,FALSE,FALSE,Physics-Waves
 Physics,What is voltage?,Electric potential difference,Electric current flow,Electric resistance,Electric power,Electric potential difference,Easy,FALSE,FALSE,Physics-Electricity
 Physics,What are magnetic poles?,Regions of strongest magnetic force,Regions of weakest magnetic force,Points where magnetic field is zero,Areas of no magnetic effect,Regions of strongest magnetic force,Easy,FALSE,FALSE,Physics-Magnetism
-Physics,A 5 kg object is pushed with a force of 20 N. What is its acceleration?,4 m/s²,5 m/s²,10 m/s²,2 m/s²,4 m/s²,Medium,FALSE,FALSE,Physics-Mechanics
-Physics,A ball is thrown upward with initial velocity 20 m/s. How high does it go?,20.4 m,40.8 m,10.2 m,30.6 m,20.4 m,Medium,FALSE,FALSE,Physics-Mechanics
+Physics,A 5 kg object is pushed with a force of 20 N. What is its acceleration?,4 m/s²,5 m/s²,10 m/s²,2 m/s²,4 m/s²,Medium,TRUE,FALSE,Physics-Mechanics
+Physics,A ball is thrown upward with initial velocity 20 m/s. How high does it go?,20.4 m,40.8 m,10.2 m,30.6 m,20.4 m,Medium,TRUE,FALSE,Physics-Mechanics
 Physics,How much heat is needed to raise the temperature of 2 kg of water from 20°C to 80°C?,504 kJ,1008 kJ,252 kJ,756 kJ,504 kJ,Medium,FALSE,FALSE,Physics-Thermodynamics
-Physics,A wave has frequency 100 Hz and wavelength 2 m. What is its speed?,200 m/s,50 m/s,100 m/s,400 m/s,200 m/s,Medium,FALSE,FALSE,Physics-Waves
+Physics,A wave has frequency 100 Hz and wavelength 2 m. What is its speed?,200 m/s,50 m/s,100 m/s,400 m/s,200 m/s,Medium,TRUE,FALSE,Physics-Waves
 Physics,A 12 V battery is connected to a 4 Ω resistor. What is the current?,3 A,0.33 A,48 A,16 A,3 A,Medium,FALSE,FALSE,Physics-Electricity
-Physics,"Light travels from air (n=1) to glass (n=1.5). If the angle of incidence is 30°, what is the angle of refraction?",19.5°,30°,45°,60°,19.5°,Medium,FALSE,FALSE,Physics-Optics
-Physics,A 1000 kg car moving at 20 m/s brakes to a stop. What is the work done by friction?,-200 kJ,-400 kJ,-100 kJ,-20 kJ,-200 kJ,Medium,FALSE,FALSE,Physics-Mechanics
-Physics,An ideal gas expands from 2 L to 5 L at constant pressure of 100 kPa. What work is done?,300 J,500 J,200 J,400 J,300 J,Medium,FALSE,FALSE,Physics-Thermodynamics
+Physics,"Light travels from air (n=1) to glass (n=1.5). If the angle of incidence is 30°, what is the angle of refraction?",19.5°,30°,45°,60°,19.5°,Medium,TRUE,FALSE,Physics-Optics
+Physics,A 1000 kg car moving at 20 m/s brakes to a stop. What is the work done by friction?,-200 kJ,-400 kJ,-100 kJ,-20 kJ,-200 kJ,Medium,TRUE,FALSE,Physics-Mechanics
+Physics,An ideal gas expands from 2 L to 5 L at constant pressure of 100 kPa. What work is done?,300 J,500 J,200 J,400 J,300 J,Medium,TRUE,FALSE,Physics-Thermodynamics
 Physics,A string vibrates at 440 Hz. What is the period of vibration?,0.0023 s,0.0046 s,0.0011 s,0.0092 s,0.0023 s,Medium,FALSE,FALSE,Physics-Waves
 Physics,Three 6 Ω resistors are connected in parallel. What is the equivalent resistance?,2 Ω,18 Ω,3 Ω,1 Ω,2 Ω,Medium,FALSE,FALSE,Physics-Electricity
 Physics,A convex lens has focal length 10 cm. An object is placed 30 cm from the lens. Where is the image formed?,15 cm on the other side,30 cm on the other side,7.5 cm on the other side,20 cm on the other side,15 cm on the other side,Medium,FALSE,FALSE,Physics-Optics
-Physics,A 2 kg object and 3 kg object are connected by a string over a pulley. What is the acceleration?,2 m/s²,1 m/s²,3 m/s²,4 m/s²,2 m/s²,Medium,FALSE,FALSE,Physics-Mechanics
-Physics,A heat engine operates between 500 K and 300 K. What is its maximum efficiency?,40%,50%,60%,70%,40%,Medium,FALSE,FALSE,Physics-Thermodynamics
+Physics,A 2 kg object and 3 kg object are connected by a string over a pulley. What is the acceleration?,2 m/s²,1 m/s²,3 m/s²,4 m/s²,2 m/s²,Medium,TRUE,FALSE,Physics-Mechanics
+Physics,A heat engine operates between 500 K and 300 K. What is its maximum efficiency?,40%,50%,60%,70%,40%,Medium,TRUE,FALSE,Physics-Thermodynamics
 Physics,Two waves interfere constructively. Their amplitudes are 3 cm and 4 cm. What is the resultant amplitude?,7 cm,1 cm,5 cm,12 cm,7 cm,Medium,FALSE,FALSE,Physics-Waves
 Physics,A capacitor of 10 μF is charged to 12 V. What is the stored energy?,0.72 mJ,1.44 mJ,0.36 mJ,2.88 mJ,0.72 mJ,Medium,FALSE,FALSE,Physics-Electricity
-Physics,What is the critical angle for light traveling from water (n=1.33) to air?,48.8°,41.4°,90°,60°,48.8°,Medium,FALSE,FALSE,Physics-Optics
+Physics,What is the critical angle for light traveling from water (n=1.33) to air?,48.8°,41.4°,90°,60°,48.8°,Medium,TRUE,FALSE,Physics-Optics
 Physics,A satellite orbits Earth at altitude 2000 km. What is its orbital period?,2.2 hours,1.5 hours,3.0 hours,4.5 hours,2.2 hours,Medium,FALSE,FALSE,Physics-Mechanics
-Physics,100 g of ice at 0°C melts to water at 0°C. How much heat is absorbed?,33.4 kJ,16.7 kJ,66.8 kJ,8.35 kJ,33.4 kJ,Medium,FALSE,FALSE,Physics-Thermodynamics
+Physics,100 g of ice at 0°C melts to water at 0°C. How much heat is absorbed?,33.4 kJ,16.7 kJ,66.8 kJ,8.35 kJ,33.4 kJ,Medium,TRUE,FALSE,Physics-Thermodynamics
 Physics,A standing wave has nodes 0.5 m apart. What is the wavelength?,1 m,0.5 m,2 m,0.25 m,1 m,Medium,FALSE,FALSE,Physics-Waves
 Physics,A wire carries 5 A current in a 0.2 T magnetic field. What force per meter acts on the wire?,1 N/m,0.5 N/m,2 N/m,0.1 N/m,1 N/m,Medium,FALSE,FALSE,Physics-Electricity
 Physics,A projectile is launched at 45° with initial speed 30 m/s from ground level. What is its maximum range?,91.8 m,45.9 m,183.6 m,22.9 m,91.8 m,Hard,FALSE,FALSE,Physics-Mechanics
@@ -81,24 +81,24 @@ Chemistry,What is the central atom in a complex called?,Central metal ion,Ligand
 Chemistry,What are the four quantum numbers?,"n, l, m, s","x, y, z, t","a, b, c, d","α, β, γ, δ","n, l, m, s",Easy,FALSE,FALSE,Chemistry-Quantum Chemistry
 Chemistry,What is the electron configuration of sodium?,1s²2s²2p⁶3s¹,1s²2s²2p⁶3s²,1s²2s²2p⁶,1s²2s²2p⁶3s¹3p¹,1s²2s²2p⁶3s¹,Medium,FALSE,FALSE,Chemistry-Atomic Structure
 Chemistry,Which molecule has a trigonal planar geometry?,BF₃,H₂O,CH₄,NH₃,BF₃,Medium,FALSE,FALSE,Chemistry-Bonding
-Chemistry,"If ΔH = -100 kJ and ΔS = -200 J/K at 300 K, is the reaction spontaneous?",No,Yes,Equilibrium,Cannot determine,No,Medium,TRUE,FALSE,Chemistry-Thermodynamics
+Chemistry,"If ΔH = -100 kJ and ΔS = -200 J/K at 300 K, is the reaction spontaneous?",No,Yes,Equilibrium,Cannot determine,No,Medium,FALSE,FALSE,Chemistry-Thermodynamics
 Chemistry,"For the reaction N₂ + 3H₂ ⇌ 2NH₃, Kc = 0.5. If [N₂] = 0.1 M, [H₂] = 0.3 M, what is [NH₃]?",0.087 M,0.174 M,0.043 M,0.130 M,0.087 M,Medium,FALSE,FALSE,Chemistry-Equilibrium
 Chemistry,A reaction has rate constant k = 0.01 s⁻¹. What is its half-life?,69.3 s,100 s,50 s,138.6 s,69.3 s,Medium,FALSE,FALSE,Chemistry-Kinetics
-Chemistry,What is the pH of 0.01 M HCl solution?,2,1,3,4,2,Medium,TRUE,FALSE,Chemistry-Acids and Bases
-Chemistry,How many grams of NaCl are needed to make 250 mL of 0.5 M solution?,7.3 g,14.6 g,3.65 g,29.2 g,7.3 g,Medium,TRUE,FALSE,Chemistry-Solutions
-Chemistry,What is the IUPAC name for CH₃CH₂CH₂CH₃?,Butane,Propane,Ethane,Pentane,Butane,Medium,TRUE,FALSE,Chemistry-Organic Chemistry
-Chemistry,"In the reaction 2Fe + 3Cu²⁺ → 2Fe³⁺ + 3Cu, what is oxidized?",Fe,Cu²⁺,Fe³⁺,Cu,Fe,Medium,TRUE,FALSE,Chemistry-Redox
+Chemistry,What is the pH of 0.01 M HCl solution?,2,1,3,4,2,Medium,FALSE,FALSE,Chemistry-Acids and Bases
+Chemistry,How many grams of NaCl are needed to make 250 mL of 0.5 M solution?,7.3 g,14.6 g,3.65 g,29.2 g,7.3 g,Medium,FALSE,FALSE,Chemistry-Solutions
+Chemistry,What is the IUPAC name for CH₃CH₂CH₂CH₃?,Butane,Propane,Ethane,Pentane,Butane,Medium,FALSE,FALSE,Chemistry-Organic Chemistry
+Chemistry,"In the reaction 2Fe + 3Cu²⁺ → 2Fe³⁺ + 3Cu, what is oxidized?",Fe,Cu²⁺,Fe³⁺,Cu,Fe,Medium,FALSE,FALSE,Chemistry-Redox
 Chemistry,"At STP, what volume does 2 moles of ideal gas occupy?",44.8 L,22.4 L,11.2 L,67.2 L,44.8 L,Medium,FALSE,FALSE,Chemistry-Gases
-Chemistry,How much heat is needed to melt 100 g of ice at 0°C?,33.4 kJ,4.18 kJ,2.26 kJ,6.68 kJ,33.4 kJ,Medium,TRUE,FALSE,Chemistry-Thermodynamics
+Chemistry,How much heat is needed to melt 100 g of ice at 0°C?,33.4 kJ,4.18 kJ,2.26 kJ,6.68 kJ,33.4 kJ,Medium,FALSE,FALSE,Chemistry-Thermodynamics
 Chemistry,"For the equilibrium 2SO₂ + O₂ ⇌ 2SO₃, if pressure increases, what happens?",Shifts right,Shifts left,No change,Reaction stops,Shifts right,Medium,FALSE,FALSE,Chemistry-Equilibrium
-Chemistry,"If temperature increases from 300 K to 310 K, by what factor does rate approximately double?",2,1.5,3,4,2,Medium,TRUE,FALSE,Chemistry-Kinetics
+Chemistry,"If temperature increases from 300 K to 310 K, by what factor does rate approximately double?",2,1.5,3,4,2,Medium,FALSE,FALSE,Chemistry-Kinetics
 Chemistry,What is the pOH of a solution with pH = 11?,3,11,7,14,3,Medium,FALSE,FALSE,Chemistry-Acids and Bases
 Chemistry,What is the molality of 58.44 g NaCl in 500 g water?,2 m,1 m,4 m,0.5 m,2 m,Medium,FALSE,FALSE,Chemistry-Solutions
 Chemistry,What type of reaction is CH₄ + Cl₂ → CH₃Cl + HCl?,Substitution,Addition,Elimination,Polymerization,Substitution,Medium,FALSE,FALSE,Chemistry-Organic Chemistry
 Chemistry,Balance: Cu + Ag⁺ → Cu²⁺ + Ag,Cu + 2Ag⁺ → Cu²⁺ + 2Ag,2Cu + Ag⁺ → 2Cu²⁺ + Ag,Cu + Ag⁺ → Cu²⁺ + Ag,2Cu + 2Ag⁺ → 2Cu²⁺ + 2Ag,Cu + 2Ag⁺ → Cu²⁺ + 2Ag,Medium,FALSE,FALSE,Chemistry-Redox
-Chemistry,A gas at 2 atm and 300 K is compressed to 1 atm at constant temperature. What happens to volume?,Doubles,Halves,Stays same,Triples,Doubles,Medium,TRUE,FALSE,Chemistry-Gases
-Chemistry,"For reaction A → B, ΔH = -50 kJ/mol. Is it exothermic?",Yes,No,Equilibrium,Cannot tell,Yes,Medium,TRUE,FALSE,Chemistry-Thermodynamics
-Chemistry,The equilibrium constant for A + B ⇌ C is 10. What is K for C ⇌ A + B?,0.1,10,1,100,0.1,Medium,TRUE,FALSE,Chemistry-Equilibrium
+Chemistry,A gas at 2 atm and 300 K is compressed to 1 atm at constant temperature. What happens to volume?,Doubles,Halves,Stays same,Triples,Doubles,Medium,FALSE,FALSE,Chemistry-Gases
+Chemistry,"For reaction A → B, ΔH = -50 kJ/mol. Is it exothermic?",Yes,No,Equilibrium,Cannot tell,Yes,Medium,FALSE,FALSE,Chemistry-Thermodynamics
+Chemistry,The equilibrium constant for A + B ⇌ C is 10. What is K for C ⇌ A + B?,0.1,10,1,100,0.1,Medium,FALSE,FALSE,Chemistry-Equilibrium
 Chemistry,What is the wavelength of an electron moving at 10⁶ m/s?,0.727 nm,0.364 nm,1.455 nm,0.182 nm,0.727 nm,Hard,FALSE,FALSE,Chemistry-Atomic Structure
 Chemistry,"Calculate ΔG for reaction at 298 K: ΔH = -100 kJ, ΔS = -200 J/K",-40.4 kJ,-159.6 kJ,-100 kJ,-59.6 kJ,-40.4 kJ,Hard,FALSE,FALSE,Chemistry-Thermodynamics
 Chemistry,"For 2NO₂ ⇌ N₂O₄, Kp = 5 at 298 K. If total pressure is 3 atm, what fraction is N₂O₄?",0.65,0.35,0.50,0.80,0.65,Hard,FALSE,FALSE,Chemistry-Equilibrium

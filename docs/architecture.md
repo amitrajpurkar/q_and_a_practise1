@@ -21,7 +21,7 @@ The Q&A Practice Application follows a **layered architecture** with clear separ
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Presentation Layer                        │
+│                    Presentation Layer                       │
 │  ┌─────────────────┐  ┌─────────────────┐                   │
 │  │   CLI Interface │  │   REST API      │                   │
 │  │   (src/cli/)    │  │   (src/api/)    │                   │
@@ -30,40 +30,40 @@ The Q&A Practice Application follows a **layered architecture** with clear separ
             │                    │
             ▼                    ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Service Layer                             │
+│                    Service Layer                            │
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │  QuestionService │ SessionService │ ScoreService    │    │
 │  │  CSVParserService│ QuestionRepository               │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                      (src/services/)                         │
+│                      (src/services/)                        │
 └─────────────────────────────────────────────────────────────┘
             │
             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Domain Layer                              │
+│                    Domain Layer                             │
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │  Question │ Session │ Score │ QuestionBank          │    │
 │  │  EncapsulatedQuestion │ QuestionReview              │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                      (src/models/)                           │
+│                      (src/models/)                          │
 └─────────────────────────────────────────────────────────────┘
             │
             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Infrastructure Layer                      │
+│                    Infrastructure Layer                     │
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │  Config │ Logging │ Exceptions │ Algorithms         │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                      (src/utils/)                            │
+│                      (src/utils/)                           │
 └─────────────────────────────────────────────────────────────┘
             │
             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Data Layer                                │
+│                    Data Layer                               │
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │  CSV Files (question-bank.csv)                      │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                (src/main/resources/)                         │
+│                (src/main/resources/)                        │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -327,35 +327,36 @@ The `src/services/` module has the highest complexity due to:
 
 ### Coverage by Module
 
-| Module | Coverage | Status |
-|--------|----------|--------|
-| `src/services/interfaces.py` | **100%** | ✅ Excellent |
-| `src/services/question_repository.py` | **100%** | ✅ Excellent |
-| `src/models/encapsulated_question.py` | **95%** | ✅ Excellent |
-| `src/utils/exceptions.py` | **93%** | ✅ Excellent |
-| `src/models/session.py` | **88%** | ✅ Good |
-| `src/utils/logging_config.py` | **85%** | ✅ Good |
-| `src/api/routes/topics.py` | **82%** | ✅ Good |
-| `src/api/routes/difficulties.py` | **82%** | ✅ Good |
-| `src/api/routes/sessions.py` | **78%** | ✅ Good |
-| `src/api/main.py` | **76%** | ✅ Good |
-| `src/services/di_setup.py` | **76%** | ✅ Good |
-| `src/models/question_review.py` | **76%** | ✅ Good |
-| `src/cli/main.py` | **71%** | 🟡 Medium |
-| `src/utils/algorithms.py` | **70%** | 🟡 Medium |
-| `src/models/base_question.py` | **65%** | 🟡 Medium |
-| `src/models/question_bank.py` | **65%** | 🟡 Medium |
-| `src/models/question.py` | **63%** | 🟡 Medium |
-| `src/utils/container.py` | **59%** | 🟡 Medium |
-| `src/cli/commands.py` | **56%** | 🟡 Medium |
-| `src/models/score.py` | **56%** | 🟡 Medium |
-| `src/utils/config.py` | **54%** | 🟡 Medium |
-| `src/services/session_service.py` | **53%** | 🟡 Medium |
-| `src/api/routes/questions.py` | **51%** | 🟡 Medium |
-| `src/api/routes/scores.py` | **51%** | 🟡 Medium |
-| `src/services/question_service.py` | **51%** | 🟡 Medium |
-| `src/services/score_service.py` | **42%** | 🔴 Low |
-| `src/services/csv_parser.py` | **39%** | 🔴 Low |
+| Module | Stmts | Miss | Coverage | Status |
+|--------|-------|------|----------|--------|
+| `src/services/interfaces.py` | 14 | 0 | **100%** | ✅ Excellent |
+| `src/services/question_repository.py` | 69 | 0 | **100%** | ✅ Excellent |
+| `src/models/encapsulated_question.py` | 257 | 12 | **95%** | ✅ Excellent |
+| `src/utils/exceptions.py` | 41 | 3 | **93%** | ✅ Excellent |
+| `src/models/session.py` | 133 | 16 | **88%** | ✅ Good |
+| `src/utils/logging_config.py` | 87 | 13 | **85%** | ✅ Good |
+| `src/api/routes/topics.py` | 17 | 3 | **82%** | ✅ Good |
+| `src/api/routes/difficulties.py` | 17 | 3 | **82%** | ✅ Good |
+| `src/api/main.py` | 87 | 17 | **80%** | ✅ Good |
+| `src/api/routes/sessions.py` | 138 | 30 | **78%** | ✅ Good |
+| `src/services/di_setup.py` | 79 | 19 | **76%** | ✅ Good |
+| `src/models/question_review.py` | 80 | 19 | **76%** | ✅ Good |
+| `src/cli/main.py` | 76 | 22 | **71%** | 🟡 Medium |
+| `src/utils/algorithms.py` | 324 | 98 | **70%** | 🟡 Medium |
+| `src/utils/config.py` | 97 | 32 | **67%** | 🟡 Medium |
+| `src/models/base_question.py` | 147 | 52 | **65%** | 🟡 Medium |
+| `src/models/question_bank.py` | 164 | 58 | **65%** | 🟡 Medium |
+| `src/models/question.py` | 225 | 83 | **63%** | 🟡 Medium |
+| `src/utils/container.py` | 29 | 12 | **59%** | 🟡 Medium |
+| `src/cli/commands.py` | 262 | 115 | **56%** | 🟡 Medium |
+| `src/models/score.py` | 154 | 67 | **56%** | 🟡 Medium |
+| `src/services/session_service.py` | 262 | 124 | **53%** | 🟡 Medium |
+| `src/api/routes/questions.py` | 51 | 25 | **51%** | 🟡 Medium |
+| `src/api/routes/scores.py` | 41 | 20 | **51%** | 🟡 Medium |
+| `src/services/question_service.py` | 642 | 313 | **51%** | 🟡 Medium |
+| `src/services/score_service.py` | 257 | 149 | **42%** | 🔴 Low |
+| `src/services/csv_parser.py` | 464 | 285 | **39%** | 🔴 Low |
+| **TOTAL** | **4214** | **1590** | **62%** | 🟡 Medium |
 
 ### Coverage by Layer
 
@@ -371,9 +372,11 @@ The `src/services/` module has the highest complexity due to:
 
 | Test Category | Count |
 |---------------|-------|
-| Unit Tests | 555 |
-| Integration Tests | 0 |
-| End-to-End Tests | 0 |
+| Unit Tests | 481 |
+| Contract Tests | 30 |
+| Integration Tests | 44 |
+| Quality Tests | 80+ |
+| **Total** | **555+** |
 
 ### Recommendations for Improving Coverage
 
@@ -392,4 +395,4 @@ The `src/services/` module has the highest complexity due to:
 
 ---
 
-*Last Updated: December 7, 2025*
+*Last Updated: December 8, 2025*

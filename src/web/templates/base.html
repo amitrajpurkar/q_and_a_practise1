@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,6 +25,7 @@
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -189,9 +190,9 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 min-h-screen font-sans antialiased">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen font-sans antialiased transition-colors duration-200">
     <!-- Header Navigation -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo and Title -->
@@ -202,22 +203,27 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-semibold text-gray-900">Q&A Practice</h1>
-                        <p class="text-xs text-gray-500">Interactive Learning Platform</p>
+                        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Q&A Practice</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Interactive Learning Platform</p>
                     </div>
                 </div>
                 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         Home
                     </a>
-                    <a href="/about" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         About
                     </a>
-                    <button onclick="toggleTheme()" class="text-gray-700 hover:text-primary-600 p-2 rounded-md transition-colors" title="Toggle theme">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="toggleTheme()" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-md transition-colors" title="Toggle theme">
+                        <!-- Moon icon (shown in light mode) -->
+                        <svg id="moon-icon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                        <!-- Sun icon (shown in dark mode) -->
+                        <svg id="sun-icon" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </button>
                 </div>
@@ -249,20 +255,20 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
                     © 2025 Q&A Practice Application. All rights reserved.
                 </div>
                 <div class="flex items-center space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="text-gray-400 hover:text-gray-500 transition-colors">
+                    <a href="#" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 transition-colors">
                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.164 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/>
                         </svg>
                     </a>
-                    <span class="text-sm text-gray-500">
-                        Built with ❤️ using FastAPI, Jinja2 & HTMX
+                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                        Built using FastAPI, Jinja2 and HTMX
                     </span>
                 </div>
             </div>
@@ -277,11 +283,41 @@
             menu.classList.toggle('hidden');
         }
 
-        // Theme toggle (basic implementation)
+        // Theme toggle with localStorage persistence
         function toggleTheme() {
-            document.body.classList.toggle('dark');
-            // In a real implementation, you'd save preference to localStorage
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            document.body.classList.toggle('dark', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update theme icon
+            updateThemeIcon(isDark);
         }
+        
+        function updateThemeIcon(isDark) {
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            if (sunIcon && moonIcon) {
+                sunIcon.classList.toggle('hidden', !isDark);
+                moonIcon.classList.toggle('hidden', isDark);
+            }
+        }
+        
+        // Initialize theme from localStorage
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('dark');
+            }
+            updateThemeIcon(isDark);
+        }
+        
+        // Run theme init immediately
+        initTheme();
 
         // Initialize tooltips and other interactive elements
         document.addEventListener('DOMContentLoaded', function() {

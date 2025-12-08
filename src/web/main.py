@@ -496,6 +496,73 @@ class QAAWebApp:
                 "debug": self.config.debug,
             }
 
+        # Statistics endpoint for home page counters
+        @self.app.get("/api/v1/statistics", tags=["statistics"])
+        async def get_statistics() -> Dict[str, Any]:
+            """Get application statistics for home page counters."""
+            import csv
+            from pathlib import Path
+            
+            csv_path = Path("src/main/resources/question-bank.csv")
+            total_questions = 0
+            questions_by_topic = {}
+            questions_by_difficulty = {}
+            
+            try:
+                with open(csv_path, 'r', encoding='utf-8') as file:
+                    reader = csv.DictReader(file)
+                    for row in reader:
+                        total_questions += 1
+                        topic = row.get('topic', 'Unknown').strip()
+                        difficulty = row.get('difficulty', 'Unknown').strip()
+                        
+                        # Count by topic
+                        if topic not in questions_by_topic:
+                            questions_by_topic[topic] = 0
+                        questions_by_topic[topic] += 1
+                        
+                        # Count by difficulty
+                        if difficulty not in questions_by_difficulty:
+                            questions_by_difficulty[difficulty] = 0
+                        questions_by_difficulty[difficulty] += 1
+                        
+            except FileNotFoundError:
+                self.logger.error(f"Question bank file not found at {csv_path}")
+                total_questions = 0
+            except Exception as e:
+                self.logger.error(f"Error reading question bank: {str(e)}")
+                total_questions = 0
+            
+            # Get session statistics from session service
+            completed_sessions = 0
+            average_score = 0.0
+            
+            try:
+                from src.utils.container import get_container
+                from src.services.interfaces import ISessionService
+                container = get_container()
+                session_service = container.resolve(ISessionService)
+                
+                # Get completed sessions count and average score
+                # Note: This depends on session service implementation
+                if hasattr(session_service, 'get_completed_sessions_count'):
+                    completed_sessions = session_service.get_completed_sessions_count()
+                if hasattr(session_service, 'get_average_score'):
+                    average_score = session_service.get_average_score()
+            except Exception as e:
+                self.logger.warning(f"Could not get session statistics: {str(e)}")
+                # Use defaults
+                completed_sessions = 0
+                average_score = 0.0
+            
+            return {
+                "total_questions": total_questions,
+                "completed_sessions": completed_sessions,
+                "average_score": round(average_score, 1),
+                "questions_by_topic": questions_by_topic,
+                "questions_by_difficulty": questions_by_difficulty
+            }
+
         # Root endpoint
         @self.app.get("/api", tags=["root"])
         async def api_root() -> Dict[str, Any]:

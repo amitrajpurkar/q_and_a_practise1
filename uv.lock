@@ -925,6 +925,17 @@ dev = [
     { name = "pytest-cov" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "black" },
+    { name = "flake8" },
+    { name = "httpx" },
+    { name = "mypy" },
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=24.0.0" },
@@ -942,6 +953,17 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.24.0" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "black", specifier = ">=24.0.0" },
+    { name = "flake8", specifier = ">=7.0.0" },
+    { name = "httpx", specifier = ">=0.27.0" },
+    { name = "mypy", specifier = ">=1.8.0" },
+    { name = "pre-commit", specifier = ">=3.6.0" },
+    { name = "pytest", specifier = ">=9.0.0" },
+    { name = "pytest-cov", specifier = ">=6.0.0" },
+]
 
 [[package]]
 name = "six"
