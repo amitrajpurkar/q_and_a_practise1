@@ -14,7 +14,7 @@ This is a question back application. $${\color{blue}practise \space with \space 
 
 
 ## for the kata/ practice
-make use of spec-kit to trial or {+ experiment with different tech-stacks +}
+make use of spec-kit to trial or $${\color{green}experiment-different-tech-stacks}$$
 
 ## Quick Start - Backend Services
 
