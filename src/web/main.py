@@ -711,7 +711,7 @@ def create_app(config: Optional[AppConfig] = None) -> FastAPI:
     """
 
     if config is None:
-        config = get_app_config()
+        config = load_app_config()
 
     # Setup dependencies first ( this will also setup logging)
     setup_dependency_injection(config)
@@ -749,12 +749,19 @@ def get_app() -> FastAPI:
     return _app_instance.get_app()
 
 
+# Module-level app instance for uvicorn
+def _create_app_instance():
+    """Create the FastAPI web application instance."""
+    return create_app()
+
+
+# Create app instance at module level for uvicorn
+app = _create_app_instance()
+
+
 if __name__ == "__main__":
     # Load configuration
     config = load_app_config()
-
-    # Create application
-    app = create_app(config)
 
     # Run server
     print(f"🚀 Starting Q&A Practice Web Application")

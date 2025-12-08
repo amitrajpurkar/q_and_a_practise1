@@ -1,6 +1,6 @@
 # Q&A Practice Application - User Guide
 
-This guide provides instructions for setting up and running the Q&A Practice Application, including the backend API, frontend web application, and CLI interface.
+This guide provides instructions for setting up and running the Q&A Practice Application, including the backend API, web application, and CLI interface.
 
 ---
 
@@ -9,7 +9,7 @@ This guide provides instructions for setting up and running the Q&A Practice App
 1. [Prerequisites](#prerequisites)
 2. [Installation](#installation)
 3. [Running the Backend API](#running-the-backend-api)
-4. [Running the Frontend Web Application](#running-the-frontend-web-application)
+4. [Running the Web Application](#running-the-web-application)
 5. [Running the CLI Interface](#running-the-cli-interface)
 6. [Troubleshooting](#troubleshooting)
 
@@ -23,9 +23,7 @@ Before running the application, ensure you have the following installed:
 
 | Software | Version | Purpose |
 |----------|---------|---------|
-| **Python** | 3.12+ | Backend runtime |
-| **Node.js** | 18+ | Frontend runtime |
-| **npm** | 9+ | Frontend package manager |
+| **Python** | 3.12+ | Backend and web runtime |
 | **uv** | Latest | Python package manager (recommended) |
 
 ### Verify Installation
@@ -33,12 +31,6 @@ Before running the application, ensure you have the following installed:
 ```bash
 # Check Python version
 python --version  # Should be 3.12 or higher
-
-# Check Node.js version
-node --version    # Should be 18 or higher
-
-# Check npm version
-npm --version     # Should be 9 or higher
 
 # Check uv (optional but recommended)
 uv --version
@@ -77,14 +69,6 @@ uv sync
 Or using `pip`:
 ```bash
 pip install -r requirements.txt
-```
-
-### 3. Install Frontend Dependencies
-
-```bash
-cd frontend
-npm install
-cd ..
 ```
 
 ---
@@ -155,30 +139,33 @@ export DATA_FILE=src/main/resources/question-bank.csv
 
 ---
 
-## Running the Frontend Web Application
+## Running the Web Application
 
-The frontend is a React application built with Vite that provides a modern web interface for the Q&A practice.
+The web application is a Python-based FastAPI application with Jinja2 templates that provides a modern web interface for the Q&A practice.
 
-### Prerequisites
+### Start the Web Application Server
 
-Ensure the backend API is running before starting the frontend.
-
-### Start the Frontend Development Server
-
+Using `uv`:
 ```bash
-cd frontend
-npm run dev
+uv run uvicorn src.web.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Or using Python directly:
+```bash
+python -m uvicorn src.web.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Access the Web Application
 
-Once the development server is running:
+Once the server is running:
 
 | URL | Description |
 |-----|-------------|
-| `http://localhost:5173` | Frontend application |
+| `http://localhost:8000` | Web application home page |
+| `http://localhost:8000/docs` | Swagger API documentation |
+| `http://localhost:8000/about` | About page |
 
-### Frontend Features
+### Web Application Features
 
 The web application provides:
 
@@ -188,24 +175,6 @@ The web application provides:
 - **Real-time Feedback** - See correct/incorrect answers immediately
 - **Score Summary** - View detailed performance statistics
 - **Question Review** - Review all questions and answers after completion
-
-### Building for Production
-
-To create a production build:
-
-```bash
-cd frontend
-npm run build
-```
-
-The built files will be in the `frontend/dist` directory.
-
-### Preview Production Build
-
-```bash
-cd frontend
-npm run preview
-```
 
 ---
 
@@ -316,20 +285,11 @@ lsof -i :8000
 kill -9 <PID>
 ```
 
-#### Frontend can't connect to backend
-
-Ensure the backend is running on `http://localhost:8000` and CORS is properly configured.
-
 #### Missing dependencies
 
 ```bash
-# Reinstall backend dependencies
+# Reinstall dependencies
 uv sync --reinstall
-
-# Reinstall frontend dependencies
-cd frontend
-rm -rf node_modules
-npm install
 ```
 
 #### Question data not loading
@@ -352,19 +312,18 @@ ls -la src/main/resources/question-bank.csv
 ```bash
 # 1. Install dependencies
 uv sync
-cd frontend && npm install && cd ..
 
-# 2. Start backend (Terminal 1)
+# 2. Start the web application (includes API)
+uv run uvicorn src.web.main:app --reload --port 8000
+
+# 3. Or start API-only backend
 uv run uvicorn src.api.main:app --reload --port 8000
-
-# 3. Start frontend (Terminal 2)
-cd frontend && npm run dev
 
 # 4. Or use CLI instead
 uv run python -m src.cli.main
 ```
 
 **Access Points:**
-- Backend API: http://localhost:8000
+- Web Application: http://localhost:8000
 - Swagger Docs: http://localhost:8000/docs
-- Frontend App: http://localhost:5173
+- API Root: http://localhost:8000/api
