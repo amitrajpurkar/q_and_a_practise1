@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Error - {{ error_code }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+        <!-- Error Icon -->
+        <div class="inline-flex items-center justify-center w-20 h-20 {{ 'bg-error-100' if error_code >= 500 else 'bg-warning-100' }} rounded-full mb-6">
+            {% if error_code >= 500 %}
+                <svg class="h-10 w-10 text-error-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            {% elif error_code == 404 %}
+                <svg class="h-10 w-10 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            {% elif error_code == 403 %}
+                <svg class="h-10 w-10 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            {% else %}
+                <svg class="h-10 w-10 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            {% endif %}
+        </div>
+
+        <!-- Error Title -->
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">
+            {% if error_code == 404 %}
+                Page Not Found
+            {% elif error_code == 403 %}
+                Access Denied
+            {% elif error_code == 500 %}
+                Server Error
+            {% elif error_code == 400 %}
+                Bad Request
+            {% else %}
+                {{ error_code }} Error
+            {% endif %}
+        </h1>
+
+        <!-- Error Message -->
+        <p class="text-lg text-gray-600 mb-6">
+            {% if error_code == 404 %}
+                The page you're looking for doesn't exist or has been moved.
+            {% elif error_code == 403 %}
+                You don't have permission to access this resource.
+            {% elif error_code == 500 %}
+                Something went wrong on our end. We're working to fix it.
+            {% elif error_code == 400 %}
+                The request was invalid or malformed.
+            {% else %}
+                An unexpected error occurred.
+            {% endif %}
+        </p>
+
+        <!-- Error Details ( if available ) -->
+        {% if error_details %}
+        <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+            <h3 class="font-semibold text-gray-900 mb-2">Error Details:</h3>
+            <p class="text-sm text-gray-600">{{ error_details }}</p>
+            {% if error_id %}
+            <p class="text-xs text-gray-500 mt-2">Error ID: {{ error_id }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+            <button onclick="goBack()" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Go Back
+            </button>
+            
+            <button onclick="goHome()" class="px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                Home Page
+            </button>
+            
+            {% if error_code >= 500 %}
+            <button onclick="reportError()" class="px-6 py-3 bg-error-600 text-white font-semibold rounded-lg hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Report Issue
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Need Help?</h3>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="/help" class="text-primary-600 hover:text-primary-700 transition-colors">
+                    Help Center
+                </a>
+                <a href="/contact" class="text-primary-600 hover:text-primary-700 transition-colors">
+                    Contact Support
+                </a>
+                <a href="/faq" class="text-primary-600 hover:text-primary-700 transition-colors">
+                    FAQ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Suggestions ( for 404 errors ) -->
+    {% if error_code == 404 and suggestions %}
+    <div class="mt-6 bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Did you mean?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {% for suggestion in suggestions %}
+            <a href="{{ suggestion.url }}" class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <svg class="h-4 w-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                {{ suggestion.title }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Error Report Modal ( hidden by default ) -->
+<div id="error-report-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Report Error</h3>
+        <p class="text-gray-600 mb-6">Help us improve by reporting this issue.</p>
+        
+        <form id="error-report-form">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">What were you trying to do?</label>
+                <textarea class="form-input" rows="3" placeholder="Describe what you were doing when the error occurred..." required></textarea>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email (optional)</label>
+                <input type="email" class="form-input" placeholder="your@email.com">
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeErrorReportModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                    Submit Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+/* 
+ * NOTE: This file contains Jinja2 template syntax that JavaScript linters 
+ * cannot parse. Lint errors are expected and don't affect functionality. 
+ * The code works correctly when rendered by the Flask/Jinja2 engine.
+ * 
+ * Template variables like { { error_code } } and { % if % } blocks are processed
+ * server-side before the JavaScript is executed client-side.
+ */
+
+// Template configuration ( all Jinja2 variables in one place )
+window.ErrorConfig = {
+    errorCode: {{ error_code }},
+    errorDetails: {% if error_details %}{{ error_details|tojson }}{% else %}null{% endif %},
+    errorId: {% if error_id %}{{ error_id|tojson }}{% else %}null{% endif %}
+};
+
+{% if error_code >= 500 and auto_refresh is defined %}
+window.AutoRefreshConfig = {
+    enabled: true,
+    countdown: {{ auto_refresh }}
+};
+{% else %}
+window.AutoRefreshConfig = {
+    enabled: false,
+    countdown: 0
+};
+{% endif %}
+</script>
+
+<script>
+// Error page functionality
+function goBack() {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        goHome();
+    }
+}
+
+function goHome() {
+    window.location.href = '/';
+}
+
+function reportError() {
+    document.getElementById('error-report-modal').classList.remove('hidden');
+}
+
+function closeErrorReportModal() {
+    document.getElementById('error-report-modal').classList.add('hidden');
+}
+
+// Handle error report form submission
+document.getElementById('error-report-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    
+    const reportData = {
+        error_code: window.ErrorConfig.errorCode,
+        error_details: window.ErrorConfig.errorDetails,
+        error_id: window.ErrorConfig.errorId,
+        url: window.location.href,
+        user_agent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        description: formData.get('description'),
+        email: formData.get('email')
+    };
+    
+    // Send error report
+    fetch('/api/v1/error-report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        closeErrorReportModal();
+        showToast('Error report submitted successfully. Thank you!');
+    })
+    .catch(error => {
+        console.error('Failed to submit error report:', error);
+        closeErrorReportModal();
+        showToast('Failed to submit error report. Please try again later.', 'error');
+    });
+});
+
+// Show toast notification
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 fade-in ${
+        type === 'success' ? 'bg-success-600 text-white' : 'bg-error-600 text-white'
+    }`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+// Auto-refresh for server errors ( optional )
+if (window.AutoRefreshConfig.enabled) {
+    let refreshCountdown = window.AutoRefreshConfig.countdown;
+    const refreshButton = document.createElement('button');
+    refreshButton.className = 'fixed top-4 right-4 px-4 py-2 bg-warning-600 text-white rounded-lg text-sm';
+    refreshButton.textContent = `Auto-refresh in ${refreshCountdown}s`;
+    document.body.appendChild(refreshButton);
+
+    const refreshInterval = setInterval(() => {
+        refreshCountdown--;
+        refreshButton.textContent = `Auto-refresh in ${refreshCountdown}s`;
+        
+        if (refreshCountdown <= 0) {
+            clearInterval(refreshInterval);
+            window.location.reload();
+        }
+    }, 1000);
+
+    refreshButton.addEventListener('click', () => {
+        clearInterval(refreshInterval);
+        window.location.reload();
+    });
+}
+
+// Log error for analytics
+window.addEventListener('load', function() {
+    const errorData = {
+        error_code: window.ErrorConfig.errorCode,
+        url: window.location.href,
+        referrer: document.referrer,
+        user_agent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Send to analytics endpoint ( non-blocking )
+    if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/v1/analytics/error', JSON.stringify(errorData));
+    }
+});
+</script>
+{% endblock %}

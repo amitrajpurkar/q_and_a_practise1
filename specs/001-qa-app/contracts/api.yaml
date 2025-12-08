@@ -1,0 +1,608 @@
+openapi: 3.0.0
+info:
+  title: Q&A Practice Application API
+  description: REST API for Q&A practice application with dual CLI and web interfaces
+  version: 1.0.0
+  contact:
+    name: Q&A Practice Team
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: http://localhost:8001
+    description: Production server
+
+paths:
+  /api/v1/topics:
+    get:
+      summary: Get available topics
+      description: Returns list of available topics for question selection
+      tags:
+        - Topics
+      responses:
+        '200':
+          description: List of available topics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  topics:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Physics", "Chemistry", "Math"]
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/difficulties:
+    get:
+      summary: Get available difficulty levels
+      description: Returns list of available difficulty levels
+      tags:
+        - Topics
+      responses:
+        '200':
+          description: List of available difficulty levels
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  difficulties:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Easy", "Medium", "Hard"]
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/questions:
+    get:
+      summary: Get questions by topic and difficulty
+      description: Returns filtered questions based on topic and difficulty
+      tags:
+        - Questions
+      parameters:
+        - name: topic
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [Physics, Chemistry, Math]
+          description: Filter by topic
+        - name: difficulty
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [Easy, Medium, Hard]
+          description: Filter by difficulty level
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          description: Maximum number of questions to return
+      responses:
+        '200':
+          description: List of questions matching criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+                  count:
+                    type: integer
+                    description: Total number of questions matching criteria
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/questions/random:
+    get:
+      summary: Get random question by topic and difficulty
+      description: Returns a single random question matching criteria
+      tags:
+        - Questions
+      parameters:
+        - name: topic
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [Physics, Chemistry, Math]
+          description: Filter by topic
+        - name: difficulty
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [Easy, Medium, Hard]
+          description: Filter by difficulty level
+        - name: exclude
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          description: List of question IDs to exclude
+          style: form
+          explode: false
+      responses:
+        '200':
+          description: Random question matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: No questions found matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/sessions:
+    post:
+      summary: Create new practice session
+      description: Creates a new practice session with specified topic and difficulty
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSession'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/sessions/{session_id}:
+    get:
+      summary: Get session details
+      description: Returns current session state and progress
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      responses:
+        '200':
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSession'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update session
+      description: Updates session with new answer or state change
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSessionRequest'
+      responses:
+        '200':
+          description: Session updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSession'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: End session
+      description: Ends the current session and calculates final score
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      responses:
+        '200':
+          description: Session ended successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Score'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/sessions/{session_id}/next-question:
+    get:
+      summary: Get next question for session
+      description: Returns the next question for the session based on criteria
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      responses:
+        '200':
+          description: Next question for session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: No more questions available or session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/sessions/{session_id}/score:
+    get:
+      summary: Get current session score
+      description: Returns current score and progress for the session
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      responses:
+        '200':
+          description: Current session score
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Score'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    Question:
+      type: object
+      required:
+        - id
+        - topic
+        - question_text
+        - option1
+        - option2
+        - option3
+        - option4
+        - correct_answer
+        - difficulty
+        - tag
+      properties:
+        id:
+          type: string
+          description: Unique question identifier
+          example: "physics_1"
+        topic:
+          type: string
+          enum: [Physics, Chemistry, Math]
+          description: Question topic
+          example: "Physics"
+        question_text:
+          type: string
+          description: The question text
+          example: "What is the SI unit of force?"
+        option1:
+          type: string
+          description: First multiple choice option
+          example: "Newton"
+        option2:
+          type: string
+          description: Second multiple choice option
+          example: "Joule"
+        option3:
+          type: string
+          description: Third multiple choice option
+          example: "Watt"
+        option4:
+          type: string
+          description: Fourth multiple choice option
+          example: "Pascal"
+        correct_answer:
+          type: string
+          description: The correct answer (matches one of the options)
+          example: "Newton"
+        difficulty:
+          type: string
+          enum: [Easy, Medium, Hard]
+          description: Question difficulty level
+          example: "Easy"
+        tag:
+          type: string
+          description: Topic-difficulty combination tag
+          example: "Physics-Mechanics"
+
+    UserSession:
+      type: object
+      required:
+        - session_id
+        - topic
+        - difficulty
+        - questions_asked
+        - user_answers
+        - start_time
+        - is_active
+        - total_questions
+        - current_question_index
+      properties:
+        session_id:
+          type: string
+          format: uuid
+          description: Unique session identifier
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        topic:
+          type: string
+          enum: [Physics, Chemistry, Math]
+          description: Selected topic for this session
+          example: "Physics"
+        difficulty:
+          type: string
+          enum: [Easy, Medium, Hard]
+          description: Selected difficulty for this session
+          example: "Easy"
+        questions_asked:
+          type: array
+          items:
+            type: string
+          description: List of question IDs asked in this session
+          example: ["physics_1", "physics_5", "physics_12"]
+        user_answers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of question IDs to user answers
+          example:
+            "physics_1": "Newton"
+            "physics_5": "Joule"
+        start_time:
+          type: string
+          format: date-time
+          description: Session start timestamp
+          example: "2025-12-02T10:30:00Z"
+        end_time:
+          type: string
+          format: date-time
+          description: Session end timestamp (null if active)
+          example: null
+        is_active:
+          type: boolean
+          description: Whether session is currently active
+          example: true
+        total_questions:
+          type: integer
+          minimum: 1
+          maximum: 50
+          description: Total questions planned for session
+          example: 10
+        current_question_index:
+          type: integer
+          minimum: 0
+          description: Index of current question in session
+          example: 3
+
+    Score:
+      type: object
+      required:
+        - session_id
+        - total_questions
+        - correct_answers
+        - incorrect_answers
+        - accuracy_percentage
+        - time_taken_seconds
+        - topic_performance
+      properties:
+        session_id:
+          type: string
+          format: uuid
+          description: Associated session identifier
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        total_questions:
+          type: integer
+          minimum: 0
+          description: Total questions attempted
+          example: 10
+        correct_answers:
+          type: integer
+          minimum: 0
+          description: Number of correct answers
+          example: 7
+        incorrect_answers:
+          type: integer
+          minimum: 0
+          description: Number of incorrect answers
+          example: 3
+        accuracy_percentage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Accuracy percentage (correct/total * 100)
+          example: 70.0
+        time_taken_seconds:
+          type: integer
+          minimum: 0
+          description: Total session duration in seconds
+          example: 180
+        topic_performance:
+          type: object
+          description: Performance breakdown by topic and difficulty
+          example:
+            "Physics-Easy":
+              correct: 4
+              total: 5
+            "Chemistry-Medium":
+              correct: 3
+              total: 5
+
+    CreateSessionRequest:
+      type: object
+      required:
+        - topic
+        - difficulty
+      properties:
+        topic:
+          type: string
+          enum: [Physics, Chemistry, Math]
+          description: Topic for the session
+          example: "Physics"
+        difficulty:
+          type: string
+          enum: [Easy, Medium, Hard]
+          description: Difficulty level for the session
+          example: "Easy"
+        total_questions:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 10
+          description: Number of questions for the session
+          example: 10
+
+    UpdateSessionRequest:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum: [answer, skip, pause, resume]
+          description: Action to perform on session
+          example: "answer"
+        question_id:
+          type: string
+          description: Question ID (required for answer action)
+          example: "physics_1"
+        answer:
+          type: string
+          description: User's answer (required for answer action)
+          example: "Newton"
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "ValidationError"
+        message:
+          type: string
+          description: Detailed error message
+          example: "Invalid topic specified. Must be one of: Physics, Chemistry, Math"
+        details:
+          type: object
+          description: Additional error details
+          example:
+            field: "topic"
+            value: "Biology"
+            allowed_values: ["Physics", "Chemistry", "Math"]
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Topics
+    description: Topic and difficulty management
+  - name: Questions
+    description: Question retrieval and management
+  - name: Sessions
+    description: Session management and scoring

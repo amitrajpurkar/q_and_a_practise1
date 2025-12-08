@@ -1,0 +1,228 @@
+# Implementation Plan: Q&A Practice Application
+
+**Branch**: `001-qa-app` | **Date**: 2025-12-02 | **Last Updated**: 2025-12-05 | **Spec**: [spec.md](spec.md)
+**Input**: Feature specification from `/specs/001-qa-app/spec.md`
+
+**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+
+## Summary
+
+Standalone Q&A practice application with dual interfaces (CLI and web) using Python 3.12, UV package manager, pandas for CSV processing, FastAPI backend services, and Jinja2/HTMX frontend. Application loads questions from CSV, allows topic/difficulty selection, provides randomized questions with immediate feedback, tracks scores, and generates session summaries. Architecture follows SOLID principles with 90% test coverage requirement and implementation of 15+ programming concepts.
+
+**New Feature (2025-12-05)**: Question Review on Results Page - Track each question answered during quiz session and display question-by-question breakdown on results page showing user's answer vs correct answer. Display congratulatory message for perfect scores (10/10).
+
+## Technical Context
+
+**Language/Version**: Python 3.12  
+**Primary Dependencies**: FastAPI, pandas, Jinja2, HTMX, pytest, uvicorn  
+**Storage**: CSV file for question bank (question-bank.csv)  
+**Testing**: pytest with pytest-cov for 90% coverage requirement  
+**Target Platform**: Cross-platform desktop (Windows, macOS, Linux)  
+**Project Type**: Web application with CLI interface  
+**Performance Goals**: <2s CSV parsing for 200+ questions, <200ms UI response time  
+**Constraints**: <100MB memory usage, standalone operation, 90% test coverage  
+**Scale/Scope**: Single-user sessions, 200+ questions, 3 topics × 3 difficulties
+
+## Constitution Check
+
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+
+### SOLID Principles Compliance
+- [x] Single Responsibility: Each module has one reason to change - Service layer separation
+- [x] Open/Closed: Classes open for extension, closed for modification - Abstract interfaces
+- [x] Liskov Substitution: Child classes substitutable for parents - Base question classes
+- [x] Interface Segregation: No fat interfaces, clients depend only on used methods - Specific service interfaces
+- [x] Dependency Inversion: High-level modules don't depend on low-level modules - Repository pattern with DI
+
+### Test Coverage Requirements
+- [x] 90% minimum test coverage planned - pytest with pytest-cov configured
+- [x] TDD approach (test-first development) - Test structure defined in plan
+- [x] Unit tests for all business logic - Comprehensive unit test structure
+- [x] Integration tests for service interactions - API endpoint and workflow tests
+- [x] End-to-end tests for user journeys - CLI and web interface tests
+
+### Modular Architecture Requirements
+- [x] Clear backend/frontend separation - FastAPI backend + Jinja2/HTMX frontend + CLI
+- [x] Service layer abstractions - Defined service interfaces and implementations
+- [x] Independent module deployability - Separate modules with clear boundaries
+- [x] No direct data access from presentation layer - Repository pattern abstraction
+
+### Programming Concepts Implementation
+- [x] Arrays and data structures - Python lists, dictionaries for question storage
+- [x] User-defined objects and records - Question, UserSession, Score, QuestionReview dataclasses
+- [x] Simple and complex selection (if/else, nested if, switch) - Answer validation logic
+- [x] Loops and nested loops - Question processing and filtering algorithms
+- [x] User-defined methods with parameters and return values - Service methods
+- [x] Sorting algorithms - Question organization by difficulty
+- [x] Searching algorithms - Question filtering and lookup
+- [x] File I/O operations - CSV parsing with pandas
+- [x] Sentinels/flags for control flow - Session state management
+- [x] Recursion where appropriate - Complex data structure operations
+- [x] Merging sorted data structures - Question bank organization
+- [x] Polymorphism implementation - Different question type handling
+- [x] Inheritance hierarchies - Base classes for entities
+- [x] Encapsulation practices - Private methods and data protection
+- [x] Text file parsing capabilities - CSV processing with error handling
+
+## Project Structure
+
+### Documentation (this feature)
+
+```text
+specs/001-qa-app/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command)
+```
+
+### Source Code (repository root)
+
+```text
+src/
+├── models/
+│   ├── __init__.py
+│   ├── question.py
+│   ├── session.py
+│   ├── score.py
+│   └── question_review.py    # NEW: QuestionReview model
+├── services/
+│   ├── __init__.py
+│   ├── question_service.py
+│   ├── session_service.py
+│   ├── score_service.py
+│   └── csv_parser.py
+├── api/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── questions.py
+│   │   ├── topics.py
+│   │   ├── difficulties.py
+│   │   └── sessions.py
+│   └── dependencies.py
+├── cli/
+│   ├── __init__.py
+│   ├── main.py
+│   └── commands.py
+├── web/
+│   ├── main.py              # Web application entry point
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css    # Tailwind CSS styling
+│   │   └── js/
+│   │       └── quiz.js      # HTMX interactions + question tracking
+│   └── templates/
+│       ├── base.html        # Base template with navigation
+│       ├── index.html       # Topic/difficulty selection
+│       ├── quiz.html        # Question presentation + answer tracking
+│       ├── question.html    # Individual question partial
+│       ├── results.html     # Session results + Question Review section
+│       ├── about.html       # Application information
+│       ├── error.html       # Error page template
+│       ├── 404.html         # Not found page
+│       └── 500.html         # Server error page
+└── utils/
+    ├── __init__.py
+    ├── validators.py
+    └── exceptions.py
+
+tests/
+├── unit/
+│   ├── test_models/
+│   │   └── test_question_review.py  # NEW: QuestionReview tests
+│   ├── test_services/
+│   ├── test_api/
+│   └── test_cli/
+├── integration/
+│   ├── test_api_endpoints.py
+│   ├── test_cli_workflows.py
+│   └── test_question_review_flow.py  # NEW: Question review integration tests
+└── contract/
+    └── test_api_contracts.py
+
+pyproject.toml
+README.md
+requirements.txt
+src/main/resources/question-bank.csv
+```
+
+**Structure Decision**: Modular architecture with clear separation of concerns. Backend services in `src/api/` with FastAPI, CLI interface in `src/cli/`, web frontend in `src/web/` using Jinja2/HTMX, shared models and services, comprehensive test structure for 90% coverage requirement.
+
+## Implementation Status
+
+| Phase | Status | Description |
+|-------|--------|-------------|
+| Phase 1 | ✅ Complete | Setup - Project structure, dependencies |
+| Phase 2 | ✅ Complete | Foundational - Core infrastructure |
+| Phase 3 | ✅ Complete | User Story 1 - Topic/Difficulty Selection |
+| Phase 4 | ✅ Complete | User Story 2 - Question Presentation & Answers |
+| Phase 5 | ✅ Complete | User Story 3 - Score Tracking & Summary |
+| Phase 6 | ✅ Complete | Programming Concepts (15+ concepts) |
+| Phase 7 | ✅ Complete | User Interface (CLI + Web) |
+| Phase 7.5 | ✅ Complete | User Story 4 - About Page & Navigation |
+| Phase 7.6 | ✅ Complete | Bug Fixes (2025-12-03 to 2025-12-05) |
+| Phase 8 | ⏳ Pending | User Story 5 - Question Review Feature |
+| Phase 9 | ⏳ Pending | Quality Assurance & Compliance |
+| Phase 10 | ⏳ Pending | Polish & Cross-Cutting Concerns |
+
+## Recent Updates (2025-12-05)
+
+### New Feature: Question Review on Results Page (User Story 5)
+- **QuestionReview Model**: New data model to track question responses
+- **Quiz State Tracking**: Track each question/answer pair during quiz session
+- **Results Page Enhancement**: Display question-by-question breakdown
+- **Perfect Score Handling**: Show congratulatory message for 10/10 correct
+- **Visual Distinction**: Color-coded correct/incorrect answers in review
+
+### Bug Fixes & Enhancements (Previous)
+- **About Page**: Added `/about` route and template with application information
+- **Navigation**: Ensured consistent Home/About links across all pages
+- **Answer Validation**: Fixed HTMX form submission for answer checking
+- **Score Tracking**: Fixed counter updates and accuracy calculations
+- **Question Tracking**: Added CSV-based tracking to prevent duplicate questions
+- **Session Management**: Improved session state handling across quiz flow
+
+## Question Review Feature Design
+
+### Data Flow
+1. **Quiz Start**: Initialize empty `questionReviews` array in quiz state
+2. **Answer Submission**: After each answer validation, add review entry:
+   - Question number (1-10)
+   - Question text
+   - User's selected answer
+   - Correct answer
+   - Whether answer was correct (boolean)
+3. **Quiz End**: Pass `questionReviews` array to results page via URL or session
+4. **Results Display**: Render Question Review section based on data
+
+### Conditional Display Logic
+```
+IF accuracy == 100% (all correct):
+    Display congratulatory message
+    Hide question breakdown
+ELSE:
+    Display Question Review section
+    Show each question with:
+        - Question number
+        - Question text
+        - User's answer (red if wrong)
+        - Correct answer (green)
+```
+
+### UI Components
+- **Congratulatory Banner**: Green success message for perfect scores
+- **Question Review Card**: Individual card per question with visual indicators
+- **Correct Answer**: Green background/border, checkmark icon
+- **Incorrect Answer**: Red background/border, X icon, shows correct answer
+
+## Complexity Tracking
+
+> **Fill ONLY if Constitution Check has violations that must be justified**
+
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| N/A | No violations | All requirements met within constitution |
