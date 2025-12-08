@@ -39,17 +39,17 @@ cd q_and_a_practise1
 
 ### 3. Create Virtual Environment and Install Dependencies
 ```bash
-# Create virtual environment with UV
-uv venv
+# Install dependencies with UV (creates venv automatically)
+uv sync
 
-# Activate virtual environment
-# On macOS/Linux:
-source .venv/bin/activate
-# On Windows:
-.venv\Scripts\activate
+# Or manually create and activate virtual environment
+uv venv
+source .venv/bin/activate  # macOS/Linux
+# .venv\Scripts\activate    # Windows
 
 # Install dependencies
 uv pip install -e .
+uv pip install httpx pytest-cov  # For testing
 ```
 
 ### 4. Verify Question Bank
@@ -67,8 +67,11 @@ head -1 src/main/resources/question-bank.csv
 
 #### Start the Web Server
 ```bash
-# From project root
-python -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+# From project root - Web interface with templates
+uv run uvicorn src.web.main:app --reload --host 0.0.0.0 --port 8000
+
+# Or API-only server
+uv run uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 #### Access the Web Interface
@@ -88,7 +91,12 @@ python -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 #### Start the CLI Application
 ```bash
 # From project root
-python -m src.cli.main
+uv run python -m src.cli.main
+
+# Or with arguments
+uv run python -m src.cli.main --topic Physics --difficulty Easy
+uv run python -m src.cli.main --list-topics
+uv run python -m src.cli.main --list-difficulties
 ```
 
 #### Using the CLI Interface
@@ -132,16 +140,20 @@ Time Taken: 3 minutes 45 seconds
 
 ### Running Tests
 ```bash
-# Run all tests with coverage
-uv run pytest --cov=src --cov-report=html
+# Run all tests with coverage (using scripts)
+./scripts/run_tests.sh all
+
+# Or manually
+uv run pytest tests/unit tests/contract tests/integration --cov=src --cov-report=term --override-ini="addopts="
 
 # Run specific test categories
-uv run pytest tests/unit/          # Unit tests only
-uv run pytest tests/integration/   # Integration tests only
-uv run pytest tests/contract/      # Contract tests only
+uv run pytest tests/unit/ --override-ini="addopts=" -v          # Unit tests only
+uv run pytest tests/integration/ --override-ini="addopts=" -v   # Integration tests only
+uv run pytest tests/contract/ --override-ini="addopts=" -v      # Contract tests only
+uv run pytest tests/quality/ --override-ini="addopts=" -v       # Quality tests only
 
 # Run tests with verbose output
-uv run pytest -v
+uv run pytest -v --override-ini="addopts="
 ```
 
 ### Code Quality Checks
@@ -161,11 +173,17 @@ uv run pre-commit run --all-files
 
 ### Development Server
 ```bash
-# Start development server with auto-reload
-uv run uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+# Using deployment script
+./scripts/deploy.sh development web
+
+# Or manually start development server with auto-reload
+uv run uvicorn src.web.main:app --reload --host 0.0.0.0 --port 8000
 
 # Start with debug mode
-uv run uvicorn src.api.main:app --reload --log-level debug
+uv run uvicorn src.web.main:app --reload --log-level debug
+
+# Start API-only server
+uv run uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## API Documentation
